@@ -3,13 +3,21 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export const ThemeContext = createContext(undefined);
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    try {
+      return localStorage.getItem('isDarkMode') === 'true';
+    } catch (error) {
+      return false;
+    }
+  });
 
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('isDarkMode', 'true');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('isDarkMode', 'false');
     }
   }, [isDarkMode]);
 

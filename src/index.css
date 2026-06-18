@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
     --font-roboto: "Roboto", sans-serif;
     --color-primary: #2563EB;
@@ -14,4 +16,12 @@
 
     --color-text-dark: #0F172A;
     --color-text-gray: #64748B;
+}
+
+@utility scrollbar-none {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }

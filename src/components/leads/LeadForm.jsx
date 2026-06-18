@@ -4,17 +4,9 @@ const STATUS_OPTIONS = ['New', 'Contacted', 'Meeting Scheduled', 'Proposal Sent'
 const SOURCE_OPTIONS = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email Campaign', 'Other'];
 
 /**
- * @typedef {Object} LeadFormProps
- * @property {Object} [initialData] - Optional initial lead data for edit mode
- * @property {Function} onSubmit - Callback when the form is submitted
- * @property {Function} onCancel - Callback when the cancel button is clicked
- */
-
-/**
  * A form component to create or edit a lead.
- *
- * @param {LeadFormProps} props
- * @returns {JSX.Element}
+ * On mobile the form is rendered inside a full-screen sheet so all inputs
+ * must be comfortably tappable (min-h-[44px], larger font on mobile).
  */
 const LeadForm = ({ initialData, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -37,7 +29,6 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -49,7 +40,6 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
     if (!formData.company.trim()) newErrors.company = 'Company is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Email is invalid';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -61,10 +51,19 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
     }
   };
 
+  // Shared class helpers
+  const labelClass = 'block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1';
+  const inputBase =
+    'w-full px-3 py-3 md:py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-colors min-h-[44px]';
+  const inputNormal = `${inputBase} border-slate-300 dark:border-gray-600`;
+  const inputError = `${inputBase} border-red-500`;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+
+      {/* Name */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="name" className={labelClass}>
           Name <span className="text-red-500">*</span>
         </label>
         <input
@@ -73,16 +72,16 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.name ? 'border-red-500' : 'border-slate-300'
-          }`}
+          className={errors.name ? inputError : inputNormal}
           placeholder="e.g. Jane Doe"
+          autoComplete="name"
         />
         {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
       </div>
 
+      {/* Company */}
       <div>
-        <label htmlFor="company" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="company" className={labelClass}>
           Company <span className="text-red-500">*</span>
         </label>
         <input
@@ -91,16 +90,16 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
           name="company"
           value={formData.company}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.company ? 'border-red-500' : 'border-slate-300'
-          }`}
+          className={errors.company ? inputError : inputNormal}
           placeholder="e.g. Acme Corp"
+          autoComplete="organization"
         />
         {errors.company && <p className="mt-1 text-sm text-red-500">{errors.company}</p>}
       </div>
 
+      {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="email" className={labelClass}>
           Email <span className="text-red-500">*</span>
         </label>
         <input
@@ -109,16 +108,17 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.email ? 'border-red-500' : 'border-slate-300'
-          }`}
+          className={errors.email ? inputError : inputNormal}
           placeholder="jane@example.com"
+          autoComplete="email"
+          inputMode="email"
         />
         {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
       </div>
 
+      {/* Phone */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="phone" className={labelClass}>
           Phone
         </label>
         <input
@@ -127,14 +127,17 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
           name="phone"
           value={formData.phone}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputNormal}
           placeholder="(555) 123-4567"
+          autoComplete="tel"
+          inputMode="tel"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Status + Source — side by side on sm+, stacked on xs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="status" className={labelClass}>
             Status
           </label>
           <select
@@ -142,7 +145,7 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className={`${inputNormal} cursor-pointer`}
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>{opt}</option>
@@ -151,7 +154,7 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
         </div>
 
         <div>
-          <label htmlFor="source" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="source" className={labelClass}>
             Source
           </label>
           <select
@@ -159,7 +162,7 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
             name="source"
             value={formData.source}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className={`${inputNormal} cursor-pointer`}
           >
             {SOURCE_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>{opt}</option>
@@ -168,17 +171,18 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200 mt-6">
+      {/* Actions */}
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-200 dark:border-gray-700 mt-6">
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:w-auto px-4 py-3 md:py-2 text-sm font-medium text-slate-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors min-h-[44px]"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full sm:w-auto px-4 py-3 md:py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors min-h-[44px]"
         >
           {initialData ? 'Save Changes' : 'Add Lead'}
         </button>

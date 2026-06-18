@@ -1,32 +1,55 @@
-// Import React
-import React from "react";
-// Import BrowserRouter from react-router-dom to enable routing based on the browser's URL
+import React, { useState } from "react";
 import { BrowserRouter } from 'react-router-dom';
-// Import the centralized routes component we created
+import { Menu } from 'lucide-react';
 import AppRoutes from './routes/index';
-// Import the Sidebar component
 import Sidebar from './components/Sidebar';
 
-// Define the main App component
 function App() {
-  // Return the main application structure
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    // Wrap the entire app with BrowserRouter to provide routing context
     <BrowserRouter>
-      {/* Flex container to place sidebar and main content side-by-side */}
-      <div className="flex min-h-screen bg-gray-50 font-sans">
-        {/* Render the Sidebar fixed on the left */}
-        <Sidebar />
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 font-sans">
         
-        {/* Main content area takes remaining space, with a left margin to accommodate the fixed 64 (16rem) wide sidebar */}
-        <main className="flex-1 ml-64 p-8">
-          {/* Render the current route's corresponding component here */}
-          <AppRoutes />
-        </main>
+        {/* Responsive Sidebar (handles mobile drawer, tablet narrow, desktop wide) */}
+        <Sidebar 
+          isMobileMenuOpen={isMobileMenuOpen} 
+          setIsMobileMenuOpen={setIsMobileMenuOpen} 
+        />
+
+        {/*
+          Main content area:
+          - Mobile: no left margin, padding-bottom to clear the fixed bottom nav, padding-top to clear the mobile top header
+          - Tablet: ml-20 to clear the narrow icon sidebar (w-20)
+          - Desktop: ml-64 to clear the full sidebar (w-64)
+        */}
+        <div className="flex-1 flex flex-col min-w-0 ml-0 md:ml-20 lg:ml-64">
+          
+          {/* Mobile Top Header */}
+          <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-slate-200 dark:border-gray-700 sticky top-0 z-30 shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">SC</span>
+              </div>
+              <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">Startup CRM</span>
+            </div>
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Open menu"
+            >
+              <Menu size={24} />
+            </button>
+          </header>
+
+          <main className="flex-1 pb-20 md:pb-0">
+            <AppRoutes />
+          </main>
+
+        </div>
       </div>
     </BrowserRouter>
   );
 }
 
-// Export the App component as the default export
 export default App;

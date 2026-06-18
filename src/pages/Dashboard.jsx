@@ -15,17 +15,25 @@ const Dashboard = () => {
   const { leads } = useLeads();
 
   return (
-    <div className="bg-slate-50 p-6 md:p-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
-          <p className="text-slate-500 mt-1">Welcome back! Here's what's happening with your leads today.</p>
+        {/* ── Header ───────────────────────────────────────────────── */}
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-gray-100">
+            Dashboard
+          </h1>
+          <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 mt-1">
+            Welcome back! Here's what's happening with your leads today.
+          </p>
         </div>
 
-        {/* Stats Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* ── Stats Cards ───────────────────────────────────────────────
+              Mobile:  1 column
+              Tablet:  2 column
+              Desktop: 4 column
+          ─────────────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <StatsCard 
             title="Total Leads" 
             value="1,284" 
@@ -56,13 +64,14 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Pipeline Overview */}
-        <div className="w-full">
-          <PipelineOverview leads={leads} />
-        </div>
+        {/* ── Pipeline Overview ─────────────────────────────────────── */}
+        <PipelineOverview leads={leads} />
 
-        {/* Bottom Row: Recent Leads & Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ── Bottom Row: Recent Leads & Quick Actions ──────────────────
+              Mobile:  stacked vertically
+              Desktop: Recent Leads 2/3, Quick Actions 1/3
+          ─────────────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           <div className="lg:col-span-2">
             <RecentLeads leads={leads} />
           </div>
