@@ -4,14 +4,10 @@ import toast, { Toaster } from 'react-hot-toast';
 import LeadCard from '../components/leads/LeadCard';
 import LeadTable from '../components/leads/LeadTable';
 import LeadForm from '../components/leads/LeadForm';
-
-// Initial sample leads
-const INITIAL_LEADS = [
-  { id: '1', name: 'Alice Johnson', company: 'TechCorp', email: 'alice@techcorp.com', phone: '555-0101', status: 'New', source: 'Website', dateAdded: '2023-10-24' },
-  { id: '2', name: 'Bob Smith', company: 'Innovate LLC', email: 'bob@innovate.com', phone: '555-0102', status: 'Contacted', source: 'LinkedIn', dateAdded: '2023-10-23' },
-  { id: '3', name: 'Charlie Davis', company: 'Global Solutions', email: 'charlie@global.com', phone: '555-0103', status: 'Proposal Sent', source: 'Referral', dateAdded: '2023-10-22' },
-  { id: '4', name: 'Diana Evans', company: 'Nexus Systems', email: 'diana@nexus.com', phone: '555-0104', status: 'Won', source: 'Email Campaign', dateAdded: '2023-10-21' },
-];
+import SearchBar from '../components/common/SearchBar';
+import FilterBar from '../components/common/FilterBar';
+import EmptyState from '../components/common/EmptyState';
+import { useLeads } from '../context/LeadContext';
 
 /**
  * Main Leads page component.
@@ -20,10 +16,25 @@ const INITIAL_LEADS = [
  * @returns {JSX.Element}
  */
 const Leads = () => {
-  const [leads, setLeads] = useState(INITIAL_LEADS);
+  const { leads, addLead, updateLead, deleteLead } = useLeads();
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'card'
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filteredLeads = leads
+    .filter(lead => activeFilter === 'All' || lead.status === activeFilter)
+    .filter(lead =>
+      lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lead.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lead.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setActiveFilter('All');
+  };
 
   const handleAddLeadClick = () => {
     setSelectedLead(null);
@@ -37,7 +48,7 @@ const Leads = () => {
 
   const handleDeleteLeadClick = (id) => {
     if (window.confirm('Are you sure you want to delete this lead?')) {
-      setLeads((prev) => prev.filter((lead) => lead.id !== id));
+      deleteLead(id);
       toast.success('Lead deleted successfully', {
         iconTheme: { primary: '#EF4444', secondary: '#fff' }, // Red success icon for delete
         style: { border: '1px solid #EF4444', color: '#EF4444' }
@@ -53,20 +64,13 @@ const Leads = () => {
   const handleSubmitForm = (leadData) => {
     if (selectedLead) {
       // Edit mode
-      setLeads((prev) =>
-        prev.map((lead) => (lead.id === selectedLead.id ? { ...leadData, id: lead.id, dateAdded: lead.dateAdded } : lead))
-      );
+      updateLead(selectedLead.id, leadData);
       toast.success('Lead updated successfully', {
         style: { border: '1px solid #22C55E', color: '#166534' }
       });
     } else {
       // Create mode
-      const newLead = {
-        ...leadData,
-        id: Date.now().toString(),
-        dateAdded: new Date().toISOString().split('T')[0],
-      };
-      setLeads((prev) => [newLead, ...prev]);
+      addLead(leadData);
       toast.success('Lead added successfully', {
         style: { border: '1px solid #22C55E', color: '#166534' }
       });
@@ -115,31 +119,39 @@ const Leads = () => {
           </div>
         </div>
 
+        {/* Search and Filters */}
+        <div className="flex flex-col gap-4 mb-6">
+          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} leads={leads} />
+        </div>
+
         {/* Content area */}
         <div className="w-full">
           {/* Mobile always shows cards, desktop honors the viewMode toggle */}
           <div className={`sm:hidden space-y-4`}>
-            {leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <LeadCard key={lead.id} lead={lead} onEdit={handleEditLeadClick} onDelete={handleDeleteLeadClick} />
             ))}
-            {leads.length === 0 && (
-              <div className="text-center py-10 bg-white rounded-xl border border-slate-200 text-slate-500">
-                No leads found.
-              </div>
+            {filteredLeads.length === 0 && (
+              <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
             )}
           </div>
 
           <div className="hidden sm:block">
             {viewMode === 'table' ? (
-              <LeadTable leads={leads} onEdit={handleEditLeadClick} onDelete={handleDeleteLeadClick} />
+              filteredLeads.length > 0 ? (
+                <LeadTable leads={filteredLeads} onEdit={handleEditLeadClick} onDelete={handleDeleteLeadClick} />
+              ) : (
+                <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
+              )
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {leads.map((lead) => (
+                {filteredLeads.map((lead) => (
                   <LeadCard key={lead.id} lead={lead} onEdit={handleEditLeadClick} onDelete={handleDeleteLeadClick} />
                 ))}
-                {leads.length === 0 && (
-                  <div className="col-span-full text-center py-12 bg-white rounded-xl border border-slate-200 text-slate-500">
-                    No leads found.
+                {filteredLeads.length === 0 && (
+                  <div className="col-span-full">
+                    <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
                   </div>
                 )}
               </div>

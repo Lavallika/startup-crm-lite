@@ -4,6 +4,7 @@ import StatsCard from '../components/dashboard/StatsCard';
 import PipelineOverview from '../components/dashboard/PipelineOverview';
 import RecentLeads from '../components/dashboard/RecentLeads';
 import QuickActions from '../components/dashboard/QuickActions';
+import { useLeads } from '../context/LeadContext';
 
 /**
  * The main Dashboard page component that assembles various dashboard widgets.
@@ -11,17 +12,7 @@ import QuickActions from '../components/dashboard/QuickActions';
  * @returns {JSX.Element} The rendered Dashboard page
  */
 const Dashboard = () => {
-  // Sample data for Phase 8
-  const sampleLeads = [
-    { id: '1', name: 'Alice Johnson', company: 'TechCorp', status: 'New', dateAdded: 'Oct 24, 2023' },
-    { id: '2', name: 'Bob Smith', company: 'Innovate LLC', status: 'Contacted', dateAdded: 'Oct 23, 2023' },
-    { id: '3', name: 'Charlie Davis', company: 'Global Solutions', status: 'Qualified', dateAdded: 'Oct 22, 2023' },
-    { id: '4', name: 'Diana Evans', company: 'Nexus Systems', status: 'Proposal', dateAdded: 'Oct 21, 2023' },
-    { id: '5', name: 'Evan Wright', company: 'Apex Inc', status: 'Won', dateAdded: 'Oct 20, 2023' },
-    { id: '6', name: 'Fiona Green', company: 'Quantum Ltd', status: 'Lost', dateAdded: 'Oct 19, 2023' },
-    { id: '7', name: 'George Hall', company: 'Summit Co', status: 'New', dateAdded: 'Oct 18, 2023' },
-    { id: '8', name: 'Hannah Lee', company: 'Pioneer Group', status: 'Qualified', dateAdded: 'Oct 17, 2023' },
-  ];
+  const { leads } = useLeads();
 
   return (
     <div className="bg-slate-50 p-6 md:p-8">
@@ -67,13 +58,13 @@ const Dashboard = () => {
 
         {/* Pipeline Overview */}
         <div className="w-full">
-          <PipelineOverview leads={sampleLeads} />
+          <PipelineOverview leads={leads} />
         </div>
 
         {/* Bottom Row: Recent Leads & Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <RecentLeads leads={sampleLeads} />
+            <RecentLeads leads={leads} />
           </div>
           <div className="lg:col-span-1">
             <QuickActions />
