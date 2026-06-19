@@ -73,7 +73,7 @@ export const StatsCards = ({ stats }) => {
         return (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-6 border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
+            className="bg-gray-800 dark:bg-white rounded-2xl p-4 md:p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all"
           >
             <div className="flex items-center justify-between mb-3 md:mb-4">
               <div className={`p-2 rounded-lg text-white ${card.color}`}>
@@ -84,10 +84,10 @@ export const StatsCards = ({ stats }) => {
               </div>
             </div>
             <div className="space-y-0.5">
-              <h4 className="text-xs md:text-sm font-medium text-slate-500 dark:text-gray-400 truncate">
+              <h4 className="text-xs md:text-sm font-medium text-gray-400 dark:text-slate-500 truncate">
                 {card.title}
               </h4>
-              <div className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white truncate">
+              <div className="text-xl md:text-2xl font-bold text-white dark:text-slate-900 truncate">
                 {card.value}
               </div>
             </div>

@@ -8,11 +8,11 @@ import StatusBadge from './StatusBadge';
  */
 const LeadTable = ({ leads, onEdit, onDelete }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-gray-800 dark:bg-white rounded-xl shadow-sm border border-gray-700 dark:border-slate-200 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse" style={{ minWidth: '640px' }}>
           <thead>
-            <tr className="bg-slate-50 dark:bg-gray-900/50 text-slate-500 dark:text-gray-400 text-xs md:text-sm border-b border-slate-200 dark:border-gray-700">
+            <tr className="bg-gray-900 dark:bg-gray-50/50 text-gray-400 dark:text-slate-500 text-xs md:text-sm border-b border-gray-700 dark:border-slate-200">
               <th className="py-3 px-4 md:px-6 font-semibold">Name</th>
               <th className="py-3 px-4 md:px-6 font-semibold">Company</th>
               <th className="py-3 px-4 md:px-6 font-semibold">Status</th>
@@ -30,16 +30,16 @@ const LeadTable = ({ leads, onEdit, onDelete }) => {
                   className="hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors group"
                 >
                   <td className="py-3 md:py-4 px-4 md:px-6">
-                    <div className="font-medium text-sm text-slate-900 dark:text-white truncate max-w-[150px] md:max-w-none">
+                    <div className="font-medium text-sm text-white dark:text-slate-900 truncate max-w-[150px] md:max-w-none">
                       {lead.name}
                     </div>
                     {lead.phone && (
-                      <div className="text-xs text-slate-500 dark:text-gray-400 mt-0.5 lg:hidden truncate max-w-[150px]">
+                      <div className="text-xs text-gray-400 dark:text-slate-500 mt-0.5 lg:hidden truncate max-w-[150px]">
                         {lead.phone}
                       </div>
                     )}
                   </td>
-                  <td className="py-3 md:py-4 px-4 md:px-6 text-sm text-slate-700 dark:text-gray-300 truncate max-w-[120px] md:max-w-none">
+                  <td className="py-3 md:py-4 px-4 md:px-6 text-sm text-gray-300 dark:text-slate-700 truncate max-w-[120px] md:max-w-none">
                     {lead.company}
                   </td>
                   <td className="py-3 md:py-4 px-4 md:px-6">
@@ -82,7 +82,7 @@ const LeadTable = ({ leads, onEdit, onDelete }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="py-8 text-center text-sm text-slate-500 dark:text-gray-400">
+                <td colSpan="7" className="py-8 text-center text-sm text-gray-400 dark:text-slate-500">
                   No leads found. Add a new lead to get started.
                 </td>
               </tr>

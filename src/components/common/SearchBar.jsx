@@ -46,8 +46,8 @@ const SearchBar = ({ value, onChange }) => {
           border border-slate-300 dark:border-gray-700
           rounded-lg
           focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          bg-white dark:bg-gray-800
-          text-slate-900 dark:text-white
+          bg-gray-800 dark:bg-white
+          text-white dark:text-slate-900
           text-sm
           placeholder-slate-400 dark:placeholder-gray-500
           transition-colors

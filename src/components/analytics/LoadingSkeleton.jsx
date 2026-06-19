@@ -18,7 +18,7 @@ export const LoadingSkeleton = () => {
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm"
+            className="bg-gray-800 dark:bg-white p-4 md:p-6 rounded-2xl border border-gray-700 dark:border-slate-200 shadow-sm"
           >
             <div className="flex justify-between mb-3">
               <div className="h-8 w-8 bg-slate-200 dark:bg-gray-700 rounded-lg" />
@@ -36,10 +36,10 @@ export const LoadingSkeleton = () => {
           {[...Array(2)].map((_, i) => (
             <div
               key={i}
-              className="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl border border-slate-200 dark:border-gray-700 shadow-sm h-64 md:h-80 lg:h-96 flex flex-col gap-4"
+              className="bg-gray-800 dark:bg-white p-4 md:p-6 rounded-2xl border border-gray-700 dark:border-slate-200 shadow-sm h-64 md:h-80 lg:h-96 flex flex-col gap-4"
             >
               <div className="h-5 bg-slate-200 dark:bg-gray-700 rounded w-40" />
-              <div className="flex-1 bg-slate-100 dark:bg-gray-700 rounded-xl" />
+              <div className="flex-1 bg-gray-700 dark:bg-slate-100 rounded-xl" />
             </div>
           ))}
         </div>

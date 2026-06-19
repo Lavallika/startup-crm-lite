@@ -11,11 +11,11 @@ const formatCurrency = (amount) => {
 
 export const TopPerformersCard = ({ performers }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all h-full">
+    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-full">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Top Performers</h3>
-          <p className="text-sm text-slate-500 dark:text-gray-400">Ranked by Won Revenue</p>
+          <h3 className="text-lg font-semibold text-white dark:text-slate-900">Top Performers</h3>
+          <p className="text-sm text-gray-400 dark:text-slate-500">Ranked by Won Revenue</p>
         </div>
         <div className="p-3 bg-purple-50 text-purple-600 rounded-xl">
           <Medal className="w-6 h-6" />
@@ -35,11 +35,11 @@ export const TopPerformersCard = ({ performers }) => {
                   {idx + 1}
                 </div>
                 <div>
-                  <div className="font-medium text-slate-900 dark:text-white">{performer.name}</div>
-                  <div className="text-xs text-slate-500 dark:text-gray-400">{performer.deals} Deals Won</div>
+                  <div className="font-medium text-white dark:text-slate-900">{performer.name}</div>
+                  <div className="text-xs text-gray-400 dark:text-slate-500">{performer.deals} Deals Won</div>
                 </div>
               </div>
-              <div className="font-semibold text-slate-900 dark:text-white text-right">
+              <div className="font-semibold text-white dark:text-slate-900 text-right">
                 {formatCurrency(performer.revenue)}
               </div>
             </div>

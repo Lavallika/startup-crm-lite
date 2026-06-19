@@ -5,6 +5,7 @@ import PipelineOverview from '../components/dashboard/PipelineOverview';
 import RecentLeads from '../components/dashboard/RecentLeads';
 import QuickActions from '../components/dashboard/QuickActions';
 import { useLeads } from '../context/LeadContext';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 /**
  * The main Dashboard page component that assembles various dashboard widgets.
@@ -13,17 +14,20 @@ import { useLeads } from '../context/LeadContext';
  */
 const Dashboard = () => {
   const { leads } = useLeads();
+  const { stats } = useAnalytics();
+
+  const activeProposals = leads.filter(l => l.status === 'Proposal Sent').length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-900 dark:bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* ── Header ───────────────────────────────────────────────── */}
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-gray-100">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-100 dark:text-slate-800">
             Dashboard
           </h1>
-          <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 mt-1">
+          <p className="text-sm md:text-base text-gray-400 dark:text-slate-500 mt-1">
             Welcome back! Here's what's happening with your leads today.
           </p>
         </div>
@@ -36,28 +40,28 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <StatsCard 
             title="Total Leads" 
-            value="1,284" 
+            value={leads.length.toLocaleString()} 
             icon={Users} 
             change={12.5} 
             color="primary" 
           />
           <StatsCard 
             title="Conversion Rate" 
-            value="18.2%" 
+            value={`${stats.conversionRate}%`} 
             icon={TrendingUp} 
             change={4.1} 
             color="success" 
           />
           <StatsCard 
             title="Revenue Pipeline" 
-            value="$42,500" 
+            value={`$${stats.pipelineValue.toLocaleString()}`} 
             icon={DollarSign} 
             change={8.3} 
             color="warning" 
           />
           <StatsCard 
             title="Active Proposals" 
-            value="24" 
+            value={activeProposals.toString()} 
             icon={Activity} 
             change={-2.4} 
             color="danger" 

@@ -37,10 +37,10 @@ const PipelineOverview = ({ leads }) => {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 md:p-6 border border-slate-100 dark:border-gray-700">
-      <h3 className="text-base md:text-lg font-semibold text-slate-800 dark:text-white mb-4">Pipeline Overview</h3>
+    <div className="bg-gray-800 dark:bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-700 dark:border-slate-100">
+      <h3 className="text-base md:text-lg font-semibold text-white dark:text-slate-800 mb-4">Pipeline Overview</h3>
       
-      <div className="h-4 w-full bg-slate-100 dark:bg-gray-700 rounded-full overflow-hidden flex mb-6">
+      <div className="h-4 w-full bg-gray-700 dark:bg-slate-100 rounded-full overflow-hidden flex mb-6">
         {totalLeads > 0 ? statuses.map((status) => (
           <div
             key={status.label}
@@ -60,7 +60,7 @@ const PipelineOverview = ({ leads }) => {
               <span className={`w-3 h-3 rounded-full ${status.color} mr-2`} />
               <span className="text-xs font-medium text-slate-600 dark:text-gray-400">{status.label}</span>
             </div>
-            <span className="text-base md:text-lg font-bold text-slate-800 dark:text-white">{status.count}</span>
+            <span className="text-base md:text-lg font-bold text-white dark:text-slate-800">{status.count}</span>
           </div>
         ))}
       </div>

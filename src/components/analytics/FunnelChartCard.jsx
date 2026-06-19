@@ -1,14 +1,17 @@
 import React from 'react';
 import { FunnelChart, Funnel, LabelList, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { STATUS_COLORS } from '../../constants/analyticsColors';
+import { useTheme } from '../../context/ThemeContext';
 
 export const FunnelChartCard = ({ data }) => {
+  const { isDarkMode } = useTheme();
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-slate-200 dark:border-gray-700 shadow-lg rounded-lg">
-          <p className="font-medium text-slate-900 dark:text-white">{data.name}</p>
+        <div className="bg-gray-800 dark:bg-white p-3 border border-gray-700 dark:border-slate-200 shadow-lg rounded-lg">
+          <p className="font-medium text-white dark:text-slate-900">{data.name}</p>
           <p className="text-slate-600 dark:text-gray-400">{data.value} Leads</p>
         </div>
       );
@@ -17,10 +20,10 @@ export const FunnelChartCard = ({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
+    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Sales Funnel</h3>
-        <p className="text-sm text-slate-500 dark:text-gray-400">Conversion across stages</p>
+        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Sales Funnel</h3>
+        <p className="text-sm text-gray-400 dark:text-slate-500">Conversion across stages</p>
       </div>
 
       <div className="flex-1 w-full min-h-0">
@@ -35,7 +38,7 @@ export const FunnelChartCard = ({ data }) => {
                 data={data}
                 isAnimationActive
               >
-                <LabelList position="right" fill="#475569" stroke="none" dataKey="name" />
+                <LabelList position="right" fill={isDarkMode ? '#9CA3AF' : '#475569'} stroke="none" dataKey="name" />
                 <LabelList position="center" fill="#fff" stroke="none" dataKey="value" />
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name] || '#94A3B8'} />

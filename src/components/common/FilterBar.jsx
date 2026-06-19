@@ -31,7 +31,7 @@ const FilterBar = ({ activeFilter, onFilterChange, leads }) => {
               min-h-[36px]
               ${isActive
                 ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-sm'
-                : 'bg-white dark:bg-gray-800 text-slate-600 dark:text-gray-300 border border-slate-200 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700 hover:text-slate-900 dark:hover:text-white'
+                : 'bg-gray-800 dark:bg-white text-slate-600 dark:text-gray-300 border border-gray-700 dark:border-slate-200 hover:bg-slate-50 dark:hover:bg-gray-700 hover:text-slate-900 dark:hover:text-white'
               }
             `}
           >

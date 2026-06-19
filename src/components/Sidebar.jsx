@@ -21,7 +21,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     'flex flex-col items-center justify-center gap-1 min-w-[44px] min-h-[44px] px-3 py-2 rounded-lg transition-colors ' +
     (isActive
       ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30'
-      : 'text-slate-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400');
+      : 'text-gray-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400');
 
   // ─── Mobile drawer link ────────────────────────────────────────────────────
   const drawerLinkClass = ({ isActive }) =>
@@ -102,7 +102,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       {/* ── MOBILE BOTTOM NAVIGATION BAR ─────────────────────────────────────── */}
       <nav className="
         md:hidden fixed bottom-0 left-0 right-0 z-30
-        bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-gray-800
+        bg-gray-900 dark:bg-white border-t border-slate-200 dark:border-gray-800
         flex items-center justify-around
         px-2 py-1 safe-area-inset-bottom
       ">
@@ -115,7 +115,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         {/* Compact theme toggle on bottom bar */}
         <div className="flex flex-col items-center justify-center gap-1 min-h-[44px]">
           <DarkModeToggle compact />
-          <span className="text-[10px] font-medium text-slate-500 dark:text-gray-400 leading-tight">Theme</span>
+          <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500 leading-tight">Theme</span>
         </div>
       </nav>
     </>

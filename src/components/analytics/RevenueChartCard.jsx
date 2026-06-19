@@ -1,8 +1,11 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { CHART_COLORS } from '../../constants/analyticsColors';
+import { useTheme } from '../../context/ThemeContext';
 
 export const RevenueChartCard = ({ data }) => {
+  const { isDarkMode } = useTheme();
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const formattedRevenue = new Intl.NumberFormat('en-IN', {
@@ -12,8 +15,8 @@ export const RevenueChartCard = ({ data }) => {
       }).format(payload[0].value);
       
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-slate-200 dark:border-gray-700 shadow-lg rounded-lg">
-          <p className="font-medium text-slate-900 dark:text-white mb-1">{label} Revenue</p>
+        <div className="bg-gray-800 dark:bg-white p-3 border border-gray-700 dark:border-slate-200 shadow-lg rounded-lg">
+          <p className="font-medium text-white dark:text-slate-900 mb-1">{label} Revenue</p>
           <p className="text-emerald-600 font-semibold">{formattedRevenue}</p>
         </div>
       );
@@ -32,10 +35,10 @@ export const RevenueChartCard = ({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
+    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Revenue Analytics</h3>
-        <p className="text-sm text-slate-500 dark:text-gray-400">Won deal value over time</p>
+        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Revenue Analytics</h3>
+        <p className="text-sm text-gray-400 dark:text-slate-500">Won deal value over time</p>
       </div>
 
       <div className="flex-1 w-full min-h-0">
@@ -50,7 +53,7 @@ export const RevenueChartCard = ({ data }) => {
                   <stop offset="95%" stopColor={CHART_COLORS.success} stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? '#374151' : '#E2E8F0'} />
               <XAxis 
                 dataKey="month" 
                 axisLine={false} 

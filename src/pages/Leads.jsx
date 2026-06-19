@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, LayoutGrid, List as ListIcon, X } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Plus, LayoutGrid, List as ListIcon, X, Download } from 'lucide-react';
+import toast from 'react-hot-toast';
 import LeadCard from '../components/leads/LeadCard';
 import LeadTable from '../components/leads/LeadTable';
 import LeadForm from '../components/leads/LeadForm';
@@ -82,31 +82,78 @@ const Leads = () => {
     handleCloseModal();
   };
 
+  const handleExportCSV = () => {
+    if (filteredLeads.length === 0) {
+      toast.error('No leads to export.');
+      return;
+    }
+    
+    const headers = ['Name', 'Company', 'Email', 'Phone', 'Status', 'Source', 'Date Added'];
+    
+    const formatDate = (dateStr) => {
+      if (!dateStr) return '';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toISOString().split('T')[0];
+      } catch (e) {
+        return dateStr;
+      }
+    };
+
+    const rows = filteredLeads.map(lead => [
+      `"${lead.name || ''}"`,
+      `"${lead.company || ''}"`,
+      `"${lead.email || ''}"`,
+      `"${lead.phone || ''}"`,
+      `"${lead.status || ''}"`,
+      `"${lead.source || ''}"`,
+      `"${formatDate(lead.dateAdded || lead.createdAt)}"`
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `leads_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Leads exported successfully!', {
+      style: { border: '1px solid #22C55E', color: '#166534' }
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8 relative">
-      <Toaster position="top-right" />
+    <div className="min-h-screen bg-gray-900 dark:bg-gray-50 p-4 md:p-6 lg:p-8 relative">
 
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
 
         {/* ── Header ───────────────────────────────────────────────── */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-gray-100">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-100 dark:text-slate-800">
               Leads
             </h1>
-            <p className="text-sm md:text-base text-slate-500 dark:text-gray-400 mt-0.5 hidden sm:block">
+            <p className="text-sm md:text-base text-gray-400 dark:text-slate-500 mt-0.5 hidden sm:block">
               Manage and track your potential customers.
             </p>
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             {/* View Toggle — tablet and above only */}
-            <div className="hidden md:flex bg-white dark:bg-gray-800 rounded-lg border border-slate-200 dark:border-gray-700 p-1 shadow-sm">
+            <div className="hidden md:flex bg-gray-800 dark:bg-white rounded-lg border border-gray-700 dark:border-slate-200 p-1 shadow-sm">
               <button
                 onClick={() => setViewMode('table')}
                 className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   viewMode === 'table'
-                    ? 'bg-slate-100 dark:bg-gray-700 text-slate-800 dark:text-gray-100'
+                    ? 'bg-gray-700 dark:bg-slate-100 text-gray-100 dark:text-slate-800'
                     : 'text-slate-400 dark:text-gray-500 hover:text-slate-600'
                 }`}
                 aria-label="Table view"
@@ -117,7 +164,7 @@ const Leads = () => {
                 onClick={() => setViewMode('card')}
                 className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   viewMode === 'card'
-                    ? 'bg-slate-100 dark:bg-gray-700 text-slate-800 dark:text-gray-100'
+                    ? 'bg-gray-700 dark:bg-slate-100 text-gray-100 dark:text-slate-800'
                     : 'text-slate-400 dark:text-gray-500 hover:text-slate-600'
                 }`}
                 aria-label="Card view"
@@ -125,6 +172,16 @@ const Leads = () => {
                 <LayoutGrid size={18} />
               </button>
             </div>
+
+            {/* Export CSV button */}
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center justify-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-gray-800 dark:bg-white text-gray-200 dark:text-slate-700 border border-gray-700 dark:border-slate-200 font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 shadow-sm min-w-[44px] min-h-[44px]"
+              aria-label="Export CSV"
+            >
+              <Download size={18} className="flex-shrink-0" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
 
             {/* Add Lead button — full label on md+, icon-only on mobile */}
             <button
@@ -217,7 +274,7 @@ const Leads = () => {
             className="
               relative w-full h-full md:h-auto
               md:max-w-lg
-              bg-white dark:bg-gray-800
+              bg-gray-800 dark:bg-white
               rounded-none md:rounded-xl
               shadow-xl overflow-hidden
               flex flex-col
@@ -227,10 +284,10 @@ const Leads = () => {
             aria-labelledby="modal-title"
           >
             {/* Header */}
-            <div className="flex justify-between items-center px-4 md:px-6 py-4 border-b border-slate-100 dark:border-gray-700 flex-shrink-0">
+            <div className="flex justify-between items-center px-4 md:px-6 py-4 border-b border-gray-700 dark:border-slate-100 flex-shrink-0">
               <h2
                 id="modal-title"
-                className="text-lg md:text-xl font-semibold text-slate-800 dark:text-gray-100"
+                className="text-lg md:text-xl font-semibold text-gray-100 dark:text-slate-800"
               >
                 {selectedLead ? 'Edit Lead' : 'Add New Lead'}
               </h2>

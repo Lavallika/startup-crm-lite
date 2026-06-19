@@ -12,7 +12,7 @@ export const AnalyticsFilters = ({ value, onChange }) => {
 
   return (
     /* Horizontally scrollable on mobile so all filters are reachable */
-    <div className="flex bg-slate-100 dark:bg-gray-700 p-1 rounded-lg border border-slate-200 dark:border-gray-600 overflow-x-auto gap-0.5 min-w-0">
+    <div className="flex bg-gray-700 dark:bg-slate-100 p-1 rounded-lg border border-slate-200 dark:border-gray-600 overflow-x-auto gap-0.5 min-w-0">
       {options.map((option) => (
         <button
           key={option.value}
@@ -20,7 +20,7 @@ export const AnalyticsFilters = ({ value, onChange }) => {
           className={cn(
             'flex-shrink-0 px-3 py-2 text-xs md:text-sm font-medium rounded-md transition-all whitespace-nowrap min-h-[36px] md:min-h-[auto]',
             value === option.value
-              ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
+              ? 'bg-gray-800 dark:bg-white text-blue-600 dark:text-blue-400 shadow-sm'
               : 'text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-600'
           )}
         >

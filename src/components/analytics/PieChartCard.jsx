@@ -38,10 +38,10 @@ export const PieChartCard = ({ data, totalLeads }) => {
       const data = payload[0].payload;
       const percentage = totalLeads ? Math.round((data.value / totalLeads) * 100) : 0;
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-slate-200 dark:border-gray-700 shadow-lg rounded-lg">
-          <p className="font-medium text-slate-900 dark:text-white">{data.name}</p>
+        <div className="bg-gray-800 dark:bg-white p-3 border border-gray-700 dark:border-slate-200 shadow-lg rounded-lg">
+          <p className="font-medium text-white dark:text-slate-900">{data.name}</p>
           <p className="text-slate-600 dark:text-gray-400">{data.value} Leads</p>
-          <p className="text-slate-500 dark:text-gray-400 text-sm">{percentage}%</p>
+          <p className="text-gray-400 dark:text-slate-500 text-sm">{percentage}%</p>
         </div>
       );
     }
@@ -49,10 +49,10 @@ export const PieChartCard = ({ data, totalLeads }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
+    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Lead Status Distribution</h3>
-        <p className="text-sm text-slate-500 dark:text-gray-400">Current pipeline breakdown</p>
+        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Lead Status Distribution</h3>
+        <p className="text-sm text-gray-400 dark:text-slate-500">Current pipeline breakdown</p>
       </div>
       
       <div className="flex-1 w-full min-h-0 relative">
@@ -64,8 +64,8 @@ export const PieChartCard = ({ data, totalLeads }) => {
               {/* Only show center text if not hovering on a slice (activeIndex is handled, but fallback center text is nice) */}
               {activeIndex === null && (
                  <>
-                   <span className="text-3xl font-bold text-slate-900 dark:text-white">{totalLeads}</span>
-                   <span className="text-sm text-slate-500 dark:text-gray-400">Total Leads</span>
+                   <span className="text-3xl font-bold text-white dark:text-slate-900">{totalLeads}</span>
+                   <span className="text-sm text-gray-400 dark:text-slate-500">Total Leads</span>
                  </>
               )}
             </div>
@@ -96,7 +96,7 @@ export const PieChartCard = ({ data, totalLeads }) => {
                   formatter={(value, entry, index) => {
                     const count = data.find(d => d.name === value)?.value || 0;
                     const pct = totalLeads ? Math.round((count / totalLeads) * 100) : 0;
-                    return <span className="text-slate-700 dark:text-gray-300 font-medium ml-1">{value} <span className="text-slate-400 dark:text-gray-500 font-normal ml-1">{count} ({pct}%)</span></span>;
+                    return <span className="text-gray-300 dark:text-slate-700 font-medium ml-1">{value} <span className="text-slate-400 dark:text-gray-500 font-normal ml-1">{count} ({pct}%)</span></span>;
                   }}
                 />
               </PieChart>
