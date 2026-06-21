@@ -14,7 +14,7 @@ function App() {
         Outer wrapper: On ultra-wide screens (>1440px), center the application.
         Provides a distinct background outside the app bounds.
       */}
-      <div className="min-h-screen bg-black dark:bg-slate-200/50 w-full flex justify-center items-center">
+      <div className="min-h-screen bg-slate-200/50 dark:bg-black w-full flex justify-center items-center">
         
         {/* 
           Inner app container: 
@@ -25,7 +25,7 @@ function App() {
           - `h-screen overflow-hidden` prevents double-scrollbars and ensures 
             fixed elements behave correctly at the bottom.
         */}
-        <div className="flex h-screen w-full max-w-[1440px] bg-gray-900 dark:bg-gray-50 text-white dark:text-gray-900 transition-colors duration-500 font-sans transform-gpu relative 2xl:shadow-2xl 2xl:ring-1 2xl:ring-gray-800 2xl:dark:ring-slate-200 overflow-hidden">
+        <div className="flex h-screen w-full max-w-[1440px] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans transform-gpu relative 2xl:shadow-2xl 2xl:ring-1 2xl:ring-gray-200 2xl:dark:ring-gray-800 overflow-hidden">
           <Toaster position="top-right" />
           <Sidebar 
             isMobileMenuOpen={isMobileMenuOpen} 
@@ -41,16 +41,16 @@ function App() {
           <div className="flex-1 flex flex-col min-w-0 ml-0 md:ml-20 lg:ml-64 h-full">
             
             {/* Mobile Top Header */}
-            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-gray-800 dark:bg-white border-b border-gray-700 dark:border-slate-200 z-30 shadow-sm flex-shrink-0">
+            <header className="md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 z-30 shadow-sm flex-shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">SC</span>
                 </div>
-                <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white">Startup CRM</span>
+                <span className="font-bold text-lg tracking-tight text-gray-900 dark:text-white">Startup CRM</span>
               </div>
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-gray-400 hover:text-white dark:text-slate-500 dark:hover:text-slate-900 hover:bg-gray-700 dark:hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 aria-label="Open menu"
               >
                 <Menu size={24} />

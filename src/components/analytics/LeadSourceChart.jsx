@@ -9,8 +9,8 @@ export const LeadSourceChart = ({ data }) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-gray-800 dark:bg-white p-3 border border-gray-700 dark:border-slate-200 shadow-lg rounded-lg">
-          <p className="font-medium text-white dark:text-slate-900 mb-1">{label}</p>
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg">
+          <p className="font-medium text-gray-900 dark:text-white mb-1">{label}</p>
           <p className="text-purple-600 font-semibold">{payload[0].value} Leads</p>
         </div>
       );
@@ -19,15 +19,15 @@ export const LeadSourceChart = ({ data }) => {
   };
 
   return (
-    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Lead Sources</h3>
-        <p className="text-sm text-gray-400 dark:text-slate-500">Where are leads coming from?</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Lead Sources</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Where are leads coming from?</p>
       </div>
 
       <div className="flex-1 w-full min-h-0">
         {(!data || data.length === 0) ? (
-          <div className="flex items-center justify-center h-full text-slate-400 dark:text-gray-500">No data available</div>
+          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">No data available</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>

@@ -20,7 +20,7 @@ export const ActivityHeatmap = ({ data }) => {
   }, [data]);
 
   const getColor = (count) => {
-    if (count === 0) return 'bg-gray-700 dark:bg-slate-100';
+    if (count === 0) return 'bg-gray-100 dark:bg-gray-700';
     if (count <= 2) return 'bg-blue-200';
     if (count <= 5) return 'bg-blue-400';
     if (count <= 10) return 'bg-blue-600';
@@ -28,10 +28,10 @@ export const ActivityHeatmap = ({ data }) => {
   };
 
   return (
-    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden h-full">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all overflow-hidden h-full">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Activity Heatmap</h3>
-        <p className="text-sm text-gray-400 dark:text-slate-500">Leads created & interactions over 90 days</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Activity Heatmap</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Leads created & interactions over 90 days</p>
       </div>
 
       <div className="flex gap-1 flex-wrap content-start">
@@ -44,9 +44,9 @@ export const ActivityHeatmap = ({ data }) => {
         ))}
       </div>
       
-      <div className="flex items-center justify-end mt-4 text-xs text-gray-400 dark:text-slate-500 space-x-2">
+      <div className="flex items-center justify-end mt-4 text-xs text-gray-500 dark:text-gray-400 space-x-2">
         <span>Less</span>
-        <div className="w-3 h-3 rounded-sm bg-gray-700 dark:bg-slate-100"></div>
+        <div className="w-3 h-3 rounded-sm bg-gray-100 dark:bg-gray-700"></div>
         <div className="w-3 h-3 rounded-sm bg-blue-200"></div>
         <div className="w-3 h-3 rounded-sm bg-blue-400"></div>
         <div className="w-3 h-3 rounded-sm bg-blue-600"></div>

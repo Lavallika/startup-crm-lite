@@ -19,15 +19,15 @@ const Dashboard = () => {
   const activeProposals = leads.filter(l => l.status === 'Proposal Sent').length;
 
   return (
-    <div className="min-h-screen bg-gray-900 dark:bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* ── Header ───────────────────────────────────────────────── */}
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-100 dark:text-slate-800">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
             Dashboard
           </h1>
-          <p className="text-sm md:text-base text-gray-400 dark:text-slate-500 mt-1">
+          <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-1">
             Welcome back! Here's what's happening with your leads today.
           </p>
         </div>

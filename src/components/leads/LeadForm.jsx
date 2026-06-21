@@ -52,10 +52,10 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
   };
 
   // Shared class helpers
-  const labelClass = 'block text-sm font-medium text-gray-300 dark:text-slate-700 mb-1';
+  const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
   const inputBase =
-    'w-full px-3 py-3 md:py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-gray-800 dark:bg-white text-white dark:text-gray-900 transition-colors min-h-[44px]';
-  const inputNormal = `${inputBase} border-gray-600 dark:border-slate-300`;
+    'w-full px-3 py-3 md:py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors min-h-[44px]';
+  const inputNormal = `${inputBase} border-gray-200 dark:border-gray-600`;
   const inputError = `${inputBase} border-red-500`;
 
   return (
@@ -172,11 +172,11 @@ const LeadForm = ({ initialData, onSubmit, onCancel }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-gray-700 dark:border-slate-200 mt-6">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-6">
         <button
           type="button"
           onClick={onCancel}
-          className="w-full sm:w-auto px-4 py-3 md:py-2 text-sm font-medium text-gray-300 dark:text-slate-700 bg-gray-700 dark:bg-white border border-gray-600 dark:border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors min-h-[44px]"
+          className="w-full sm:w-auto px-4 py-3 md:py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors min-h-[44px]"
         >
           Cancel
         </button>

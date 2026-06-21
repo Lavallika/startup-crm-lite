@@ -10,9 +10,12 @@ export const FunnelChartCard = ({ data }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-gray-800 dark:bg-white p-3 border border-gray-700 dark:border-slate-200 shadow-lg rounded-lg">
-          <p className="font-medium text-white dark:text-slate-900">{data.name}</p>
-          <p className="text-slate-600 dark:text-gray-400">{data.value} Leads</p>
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl">
+          <p className="font-semibold text-gray-900 dark:text-white mb-1">{data.name}</p>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: STATUS_COLORS[data.name] || '#94A3B8' }} />
+            <p className="text-gray-600 dark:text-gray-300 font-medium">{data.value} Leads</p>
+          </div>
         </div>
       );
     }
@@ -20,15 +23,15 @@ export const FunnelChartCard = ({ data }) => {
   };
 
   return (
-    <div className="bg-gray-800 dark:bg-white rounded-2xl p-6 border border-gray-700 dark:border-slate-200 shadow-sm hover:shadow-md transition-all h-96 flex flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 h-96 flex flex-col group">
       <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white dark:text-slate-900">Sales Funnel</h3>
-        <p className="text-sm text-gray-400 dark:text-slate-500">Conversion across stages</p>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Sales Funnel</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Conversion across stages</p>
       </div>
 
       <div className="flex-1 w-full min-h-0">
         {(!data || data.length === 0) ? (
-          <div className="flex items-center justify-center h-full text-slate-400 dark:text-gray-500">No data available</div>
+          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">No data available</div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <FunnelChart>
@@ -38,8 +41,8 @@ export const FunnelChartCard = ({ data }) => {
                 data={data}
                 isAnimationActive
               >
-                <LabelList position="right" fill={isDarkMode ? '#9CA3AF' : '#475569'} stroke="none" dataKey="name" />
-                <LabelList position="center" fill="#fff" stroke="none" dataKey="value" />
+                <LabelList position="right" fill={isDarkMode ? '#475569' : '#9CA3AF'} stroke="none" dataKey="name" fontSize={13} fontWeight={500} />
+                <LabelList position="center" fill="#fff" stroke="none" dataKey="value" fontSize={14} fontWeight={700} />
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name] || '#94A3B8'} />
                 ))}

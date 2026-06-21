@@ -131,30 +131,30 @@ const Leads = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 dark:bg-gray-50 p-4 md:p-6 lg:p-8 relative">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8 relative">
 
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
 
         {/* ── Header ───────────────────────────────────────────────── */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-100 dark:text-slate-800">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
               Leads
             </h1>
-            <p className="text-sm md:text-base text-gray-400 dark:text-slate-500 mt-0.5 hidden sm:block">
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">
               Manage and track your potential customers.
             </p>
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             {/* View Toggle — tablet and above only */}
-            <div className="hidden md:flex bg-gray-800 dark:bg-white rounded-lg border border-gray-700 dark:border-slate-200 p-1 shadow-sm">
+            <div className="hidden md:flex bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-1 shadow-sm">
               <button
                 onClick={() => setViewMode('table')}
                 className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   viewMode === 'table'
-                    ? 'bg-gray-700 dark:bg-slate-100 text-gray-100 dark:text-slate-800'
-                    : 'text-slate-400 dark:text-gray-500 hover:text-slate-600'
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
                 aria-label="Table view"
               >
@@ -164,8 +164,8 @@ const Leads = () => {
                 onClick={() => setViewMode('card')}
                 className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
                   viewMode === 'card'
-                    ? 'bg-gray-700 dark:bg-slate-100 text-gray-100 dark:text-slate-800'
-                    : 'text-slate-400 dark:text-gray-500 hover:text-slate-600'
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
                 aria-label="Card view"
               >
@@ -176,7 +176,7 @@ const Leads = () => {
             {/* Export CSV button */}
             <button
               onClick={handleExportCSV}
-              className="flex items-center justify-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-gray-800 dark:bg-white text-gray-200 dark:text-slate-700 border border-gray-700 dark:border-slate-200 font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 shadow-sm min-w-[44px] min-h-[44px]"
+              className="flex items-center justify-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-sm min-w-[44px] min-h-[44px]"
               aria-label="Export CSV"
             >
               <Download size={18} className="flex-shrink-0" />
@@ -274,7 +274,7 @@ const Leads = () => {
             className="
               relative w-full h-full md:h-auto
               md:max-w-lg
-              bg-gray-800 dark:bg-white
+              bg-white dark:bg-gray-800
               rounded-none md:rounded-xl
               shadow-xl overflow-hidden
               flex flex-col
@@ -284,16 +284,16 @@ const Leads = () => {
             aria-labelledby="modal-title"
           >
             {/* Header */}
-            <div className="flex justify-between items-center px-4 md:px-6 py-4 border-b border-gray-700 dark:border-slate-100 flex-shrink-0">
+            <div className="flex justify-between items-center px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
               <h2
                 id="modal-title"
-                className="text-lg md:text-xl font-semibold text-gray-100 dark:text-slate-800"
+                className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white"
               >
                 {selectedLead ? 'Edit Lead' : 'Add New Lead'}
               </h2>
               <button
                 onClick={handleCloseModal}
-                className="text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="Close modal"
               >
                 <X size={20} />

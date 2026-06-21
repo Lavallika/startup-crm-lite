@@ -36,7 +36,7 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 dark:bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* ── Header & Filters ─────────────────────────────────────────
@@ -45,10 +45,10 @@ const Analytics = () => {
           ─────────────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-xl md:text-3xl font-bold text-white dark:text-slate-900 tracking-tight">
+            <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
               Analytics Dashboard
             </h1>
-            <p className="text-sm md:text-base text-gray-400 dark:text-slate-500 mt-1">
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-1">
               Track sales performance and growth trends.
             </p>
           </div>

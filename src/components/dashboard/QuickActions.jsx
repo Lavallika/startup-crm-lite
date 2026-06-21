@@ -59,8 +59,8 @@ const QuickActions = () => {
   };
 
   return (
-    <div className="bg-gray-800 dark:bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-700 dark:border-slate-100 h-full">
-      <h3 className="text-base md:text-lg font-semibold text-white dark:text-slate-800 mb-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700 h-full">
+      <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Quick Actions
       </h3>
       <div className="space-y-3">
@@ -75,17 +75,17 @@ const QuickActions = () => {
 
         <NavLink
           to="/leads"
-          className="w-full flex items-center justify-start gap-3 px-4 py-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 text-gray-200 dark:text-slate-700 border border-slate-200 dark:border-gray-600 rounded-lg transition-colors font-medium text-sm min-h-[44px]"
+          className="w-full flex items-center justify-start gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors font-medium text-sm min-h-[44px]"
         >
-          <Users size={18} className="flex-shrink-0 text-gray-400 dark:text-slate-500" />
+          <Users size={18} className="flex-shrink-0 text-gray-500 dark:text-gray-400" />
           View All Leads
         </NavLink>
 
         <button
-          className="w-full flex items-center justify-start gap-3 px-4 py-3 bg-slate-50 dark:bg-gray-700 hover:bg-slate-100 dark:hover:bg-gray-600 text-gray-200 dark:text-slate-700 border border-slate-200 dark:border-gray-600 rounded-lg transition-colors font-medium text-sm min-h-[44px]"
+          className="w-full flex items-center justify-start gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors font-medium text-sm min-h-[44px]"
           onClick={handleExportCSV}
         >
-          <Download size={18} className="flex-shrink-0 text-gray-400 dark:text-slate-500" />
+          <Download size={18} className="flex-shrink-0 text-gray-500 dark:text-gray-400" />
           Export Data
         </button>
       </div>

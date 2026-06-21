@@ -13,22 +13,22 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const desktopLinkClass = ({ isActive }) =>
     'group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ' +
     (isActive
-      ? 'bg-indigo-800 dark:bg-indigo-900/80 text-white shadow-sm'
-      : 'text-indigo-100 dark:text-gray-300 hover:bg-indigo-700/60 dark:hover:bg-gray-800 hover:text-white');
+      ? 'bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-white shadow-sm'
+      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white');
 
   // ─── Mobile bottom bar links ────────────────────────────────────────────────
   const mobileLinkClass = ({ isActive }) =>
     'flex flex-col items-center justify-center gap-1 min-w-[44px] min-h-[44px] px-3 py-2 rounded-lg transition-colors ' +
     (isActive
-      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30'
-      : 'text-gray-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400');
+      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-gray-700'
+      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white');
 
   // ─── Mobile drawer link ────────────────────────────────────────────────────
   const drawerLinkClass = ({ isActive }) =>
     'flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors mb-2 min-h-[44px] ' +
     (isActive
-      ? 'bg-indigo-800 text-white dark:bg-indigo-900'
-      : 'text-indigo-100 dark:text-gray-300 hover:bg-indigo-700 dark:hover:bg-gray-800 hover:text-white');
+      ? 'bg-indigo-50 text-indigo-600 dark:bg-gray-700 dark:text-white'
+      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white');
 
   return (
     <>
@@ -43,8 +43,8 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       {/* ── DRAWER / TABLET / DESKTOP LEFT SIDEBAR ──────────────────────────── */}
       <aside className={`
         fixed left-0 top-0 h-screen z-50 flex flex-col
-        bg-indigo-600 dark:bg-gray-900
-        shadow-xl border-r border-transparent dark:border-gray-800
+        bg-white dark:bg-gray-800
+        shadow-xl border-r border-gray-200 dark:border-gray-700
         transition-transform duration-300 ease-in-out
         w-64 md:w-20 lg:w-64
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
@@ -52,11 +52,11 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         {/* Brand & Close button */}
         <div className="flex items-center justify-between px-4 py-5 lg:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-              <BarChart2 className="w-5 h-5 text-white" />
+            <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center">
+              <BarChart2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             {/* Always show text on mobile drawer, or on lg+ desktop */}
-            <span className={`text-white font-bold text-xl tracking-tight whitespace-nowrap ${!isMobileMenuOpen ? 'hidden lg:block' : 'block'}`}>
+            <span className={`text-gray-900 dark:text-white font-bold text-xl tracking-tight whitespace-nowrap ${!isMobileMenuOpen ? 'hidden lg:block' : 'block'}`}>
               Startup CRM
             </span>
           </div>
@@ -65,7 +65,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
           {isMobileMenuOpen && (
             <button 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="md:hidden text-white/70 hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+              className="md:hidden text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <X size={24} />
             </button>
@@ -94,7 +94,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         </nav>
 
         {/* Dark mode toggle */}
-        <div className={`p-4 border-t border-indigo-500 dark:border-gray-800 flex ${!isMobileMenuOpen ? 'justify-center lg:justify-start' : 'justify-start'}`}>
+        <div className={`p-4 border-t border-gray-200 dark:border-gray-700 flex ${!isMobileMenuOpen ? 'justify-center lg:justify-start' : 'justify-start'}`}>
           <DarkModeToggle />
         </div>
       </aside>
@@ -102,7 +102,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       {/* ── MOBILE BOTTOM NAVIGATION BAR ─────────────────────────────────────── */}
       <nav className="
         md:hidden fixed bottom-0 left-0 right-0 z-30
-        bg-gray-900 dark:bg-white border-t border-slate-200 dark:border-gray-800
+        bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700
         flex items-center justify-around
         px-2 py-1 safe-area-inset-bottom
       ">
@@ -115,7 +115,7 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         {/* Compact theme toggle on bottom bar */}
         <div className="flex flex-col items-center justify-center gap-1 min-h-[44px]">
           <DarkModeToggle compact />
-          <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500 leading-tight">Theme</span>
+          <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 leading-tight">Theme</span>
         </div>
       </nav>
     </>

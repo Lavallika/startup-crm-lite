@@ -32,7 +32,7 @@ const SearchBar = ({ value, onChange }) => {
     <div className="relative w-full md:max-w-md">
       {/* Search icon */}
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Search size={18} className="text-slate-400 dark:text-gray-500" />
+        <Search size={18} className="text-gray-500 dark:text-gray-400" />
       </div>
 
       {/* Input — min-h-[44px] for touch */}
@@ -43,13 +43,13 @@ const SearchBar = ({ value, onChange }) => {
           pl-10 pr-10
           py-2.5 md:py-2
           min-h-[44px]
-          border border-slate-300 dark:border-gray-700
+          border border-gray-200 dark:border-gray-700
           rounded-lg
           focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-          bg-gray-800 dark:bg-white
-          text-white dark:text-slate-900
+          bg-white dark:bg-gray-700
+          text-gray-900 dark:text-white
           text-sm
-          placeholder-slate-400 dark:placeholder-gray-500
+          placeholder-gray-500 dark:placeholder-gray-400
           transition-colors
         "
         placeholder="Search by name, company, or email..."
@@ -62,7 +62,7 @@ const SearchBar = ({ value, onChange }) => {
       {localValue && (
         <button
           onClick={handleClear}
-          className="absolute inset-y-0 right-0 pr-2 flex items-center justify-center w-10 text-slate-400 hover:text-slate-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none transition-colors"
+          className="absolute inset-y-0 right-0 pr-2 flex items-center justify-center w-10 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none transition-colors"
           aria-label="Clear search"
         >
           <X size={16} />

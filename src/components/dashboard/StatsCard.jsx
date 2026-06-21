@@ -17,13 +17,13 @@ const StatsCard = ({ title, value, icon: Icon, change, color }) => {
     : 'text-red-500 dark:text-red-400';
 
   return (
-    <div className="bg-gray-800 dark:bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-700 dark:border-slate-100 transition-colors duration-200">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="flex items-center justify-between">
         <div className="min-w-0">
-          <p className="text-xs md:text-sm font-medium text-gray-400 dark:text-slate-500 mb-1 truncate">
+          <p className="text-xs md:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 truncate">
             {title}
           </p>
-          <h3 className="text-xl md:text-2xl font-bold text-white dark:text-slate-800 truncate">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">
             {value}
           </h3>
         </div>
@@ -37,7 +37,7 @@ const StatsCard = ({ title, value, icon: Icon, change, color }) => {
         <span className={`font-medium ${changeColor}`}>
           {isPositive ? '+' : ''}{change}%
         </span>
-        <span className="text-gray-400 dark:text-slate-500 ml-2">vs last month</span>
+        <span className="text-gray-500 dark:text-gray-400 ml-2">vs last month</span>
       </div>
     </div>
   );
