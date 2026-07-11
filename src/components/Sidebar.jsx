@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, BarChart2, X } from 'lucide-react';
+import { LayoutDashboard, Users, BarChart2, X, LogOut } from 'lucide-react';
 import DarkModeToggle from './common/DarkModeToggle';
+import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/',          label: 'Dashboard',  subLabel: 'Overview & KPIs',     icon: LayoutDashboard },
@@ -9,6 +10,7 @@ const NAV_ITEMS = [
 ];
 
 const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
+  const { logout, user } = useAuth();
   // ─── Desktop & tablet: left sidebar ────────────────────────────────────────
   const desktopLinkClass = ({ isActive }) =>
     'group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ' +
@@ -93,9 +95,38 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
           ))}
         </nav>
 
-        {/* Dark mode toggle */}
-        <div className={`p-4 border-t border-gray-200 dark:border-gray-700 flex ${!isMobileMenuOpen ? 'justify-center lg:justify-start' : 'justify-start'}`}>
-          <DarkModeToggle />
+        {/* Bottom section: dark mode toggle + logout */}
+        <div className={`p-4 border-t border-gray-200 dark:border-gray-700 space-y-2`}>
+          {/* Dark mode toggle */}
+          <div className={`flex ${!isMobileMenuOpen ? 'justify-center lg:justify-start' : 'justify-start'}`}>
+            <DarkModeToggle />
+          </div>
+
+          {/* User info + logout button */}
+          <div className={`flex items-center gap-3 ${!isMobileMenuOpen ? 'hidden lg:flex' : 'flex'}`}>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">{user?.name || 'User'}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate">{user?.email || ''}</p>
+            </div>
+            <button
+              onClick={logout}
+              title="Logout"
+              className="flex-shrink-0 p-2 rounded-lg text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all focus:outline-none focus:ring-2 focus:ring-red-400"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Collapsed sidebar: icon-only logout */}
+          <div className={`flex justify-center ${!isMobileMenuOpen ? 'flex md:flex lg:hidden' : 'hidden'}`}>
+            <button
+              onClick={logout}
+              title="Logout"
+              className="p-2 rounded-lg text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all focus:outline-none focus:ring-2 focus:ring-red-400"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -117,6 +148,16 @@ const Sidebar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
           <DarkModeToggle compact />
           <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 leading-tight">Theme</span>
         </div>
+
+        {/* Logout button in bottom bar */}
+        <button
+          onClick={logout}
+          className="flex flex-col items-center justify-center gap-1 min-w-[44px] min-h-[44px] px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          title="Logout"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="text-[10px] font-medium leading-tight">Logout</span>
+        </button>
       </nav>
     </>
   );

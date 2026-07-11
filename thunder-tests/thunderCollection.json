@@ -1,0 +1,292 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Startup CRM API",
+  "collectionId": "col_startup_crm_api_99",
+  "dateExported": "2026-07-11T05:22:00.000Z",
+  "version": "1.1",
+  "folders": [],
+  "requests": [
+    {
+      "_id": "req_step_1_health",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 1: GET /api/health",
+      "url": "http://localhost:5000/api/health",
+      "method": "GET",
+      "sortNum": 10000,
+      "headers": [],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_2_register",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 2: POST /api/auth/register",
+      "url": "http://localhost:5000/api/auth/register",
+      "method": "POST",
+      "sortNum": 20000,
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_step_3_login",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 3: POST /api/auth/login",
+      "url": "http://localhost:5000/api/auth/login",
+      "method": "POST",
+      "sortNum": 30000,
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_step_4_profile",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 4: GET /api/auth/profile",
+      "url": "http://localhost:5000/api/auth/profile",
+      "method": "GET",
+      "sortNum": 40000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_5_create_lead",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 5: POST /api/leads",
+      "url": "http://localhost:5000/api/leads",
+      "method": "POST",
+      "sortNum": 50000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Alice Smith\",\n  \"company\": \"Wonderland Inc\",\n  \"email\": \"alice@wonderland.com\",\n  \"phone\": \"555-0199\",\n  \"status\": \"New\",\n  \"source\": \"Website\",\n  \"notes\": \"Interested in CRM deployment plan.\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_step_6_get_leads",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 6: GET /api/leads",
+      "url": "http://localhost:5000/api/leads",
+      "method": "GET",
+      "sortNum": 60000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_7_get_lead_by_id",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 7: GET /api/leads/:id",
+      "url": "http://localhost:5000/api/leads/<replace_with_real_id>",
+      "method": "GET",
+      "sortNum": 70000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_8_update_lead",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 8: PUT /api/leads/:id",
+      "url": "http://localhost:5000/api/leads/<replace_with_real_id>",
+      "method": "PUT",
+      "sortNum": 80000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Alice Wonderland\",\n  \"company\": \"Wonderland Industries\",\n  \"email\": \"alice@wonderland.co\",\n  \"notes\": \"Updated details via PUT request.\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_step_9_patch_status",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 9: PATCH /api/leads/:id/status",
+      "url": "http://localhost:5000/api/leads/<replace_with_real_id>/status",
+      "method": "PATCH",
+      "sortNum": 90000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"status\": \"Won\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_step_10_delete_lead",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 10: DELETE /api/leads/:id",
+      "url": "http://localhost:5000/api/leads/<replace_with_real_id>",
+      "method": "DELETE",
+      "sortNum": 100000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_11_stats_summary",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 11: GET /api/leads/stats/summary",
+      "url": "http://localhost:5000/api/leads/stats/summary",
+      "method": "GET",
+      "sortNum": 110000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_step_12_get_filtered",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Step 12: GET /api/leads?status=Won",
+      "url": "http://localhost:5000/api/leads?status=Won",
+      "method": "GET",
+      "sortNum": 120000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_val_1_invalid_email",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Val Error: POST /api/auth/register (Invalid Email)",
+      "url": "http://localhost:5000/api/auth/register",
+      "method": "POST",
+      "sortNum": 130000,
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Invalid Email User\",\n  \"email\": \"invalidemailnoatsign\",\n  \"password\": \"password123\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_val_2_empty_name",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Val Error: POST /api/leads (Empty Name)",
+      "url": "http://localhost:5000/api/leads",
+      "method": "POST",
+      "sortNum": 140000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"\",\n  \"company\": \"Empty Name Corp\",\n  \"email\": \"valid@email.com\"\n}",
+        "form": []
+      },
+      "tests": []
+    },
+    {
+      "_id": "req_val_3_invalid_id",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Val Error: GET /api/leads/:id (Invalid ID)",
+      "url": "http://localhost:5000/api/leads/60d5ec49f395cd12c45e7f12",
+      "method": "GET",
+      "sortNum": 150000,
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer <paste_token_here>"
+        }
+      ],
+      "params": [],
+      "tests": []
+    },
+    {
+      "_id": "req_val_4_no_auth",
+      "colId": "col_startup_crm_api_99",
+      "containerId": "",
+      "name": "Val Error: GET /api/leads (No Auth Header)",
+      "url": "http://localhost:5000/api/leads",
+      "method": "GET",
+      "sortNum": 160000,
+      "headers": [],
+      "params": [],
+      "tests": []
+    }
+  ]
+}
