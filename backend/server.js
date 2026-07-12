@@ -22,6 +22,10 @@ import mongoSanitize from './middleware/mongoSanitize.js';
 // Load environment variables
 dotenv.config();
 
+// Hoist NODE_ENV to module scope so it is available before middleware registration.
+// This prevents a ReferenceError when the CORS callback fires during startup.
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 // Create Express Application
 const app = express();
 
@@ -59,18 +63,27 @@ app.use('/api/auth/', authLimiter);
 
 // 3. Configure CORS with origin whitelist
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL || 'http://localhost:5173',
   'https://your-app.vercel.app'
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
+      // Allow requests with no origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      // In development, allow any localhost origin (any port)
+      if (NODE_ENV === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+        return callback(null, true);
       }
+
+      // In production, restrict to the allowedOrigins whitelist
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      callback(new Error(`CORS: Origin "${origin}" is not allowed.`));
     },
     credentials: true
   })
@@ -110,7 +123,6 @@ app.use(errorHandler);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
 
 let server;
 
