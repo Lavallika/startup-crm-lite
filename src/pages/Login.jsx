@@ -29,10 +29,6 @@ const Login = () => {
     }
   };
 
-  const handleFillDemo = () => {
-    setEmail('admin@crm.com');
-    setPassword('password123');
-  };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-indigo-50 via-slate-100 to-purple-100 dark:from-gray-950 dark:via-gray-900 dark:to-slate-950 p-4">
@@ -114,18 +110,14 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Demo login option block */}
-        <div className="p-4 bg-slate-50 dark:bg-gray-800/40 rounded-xl border border-gray-200/50 dark:border-gray-800 text-center space-y-2">
+        {/* New user prompt */}
+        <div className="p-4 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-100 dark:border-indigo-900/40 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-            Testing the app? Click below to auto-fill demo account credentials.
+            First time here?{' '}
+            <Link to="/register" className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+              Create a free account
+            </Link>{' '}to get started.
           </p>
-          <button
-            type="button"
-            onClick={handleFillDemo}
-            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
-          >
-            Use Demo Credentials
-          </button>
         </div>
 
         {/* Registration redirect link */}

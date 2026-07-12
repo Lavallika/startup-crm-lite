@@ -30,8 +30,11 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const app = express();
 
 // 1. Environment variables check function on startup
+// NOTE: PORT is intentionally excluded — Railway injects PORT as a runtime
+// environment variable (not via .env), so checking for it at startup would
+// cause the server to crash on Railway. PORT falls back to 5000 locally.
 const checkRequiredEnvVars = () => {
-  const requiredEnv = ['MONGODB_URI', 'JWT_SECRET', 'PORT'];
+  const requiredEnv = ['MONGODB_URI', 'JWT_SECRET'];
   const missing = requiredEnv.filter((envVar) => !process.env[envVar]);
 
   if (missing.length > 0) {
@@ -61,16 +64,29 @@ const authLimiter = rateLimit({
 app.use('/api/', generalLimiter);
 app.use('/api/auth/', authLimiter);
 
-// 3. Configure CORS with origin whitelist
+// 3. Configure CORS
+// FRONTEND_URL must be set as an environment variable on Railway to your exact
+// Vercel deployment URL, e.g.: https://startup-crm-lite.vercel.app
+// Multiple origins can be specified by separating them with a comma:
+//   FRONTEND_URL=https://startup-crm-lite.vercel.app,https://startup-crm-lite-git-main.vercel.app
+const rawFrontendUrls = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map((u) => u.trim())
+  .filter(Boolean);
+
+// Always include localhost for local development regardless of env
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-  'https://your-app.vercel.app'
-].filter(Boolean);
+  ...rawFrontendUrls,
+  'http://localhost:5173',
+  'http://localhost:3000',
+].filter((v, i, a) => a.indexOf(v) === i); // deduplicate
+
+console.log(`[CORS] Allowed origins: ${allowedOrigins.join(', ')}`);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, server-to-server)
+      // Allow requests with no origin (curl, Postman, Railway health checks)
       if (!origin) return callback(null, true);
 
       // In development, allow any localhost origin (any port)
@@ -78,7 +94,13 @@ app.use(
         return callback(null, true);
       }
 
-      // In production, restrict to the allowedOrigins whitelist
+      // Allow any Vercel preview deployment for this project
+      // Pattern: https://<project>-<hash>-<owner>.vercel.app
+      if (/^https:\/\/startup-crm-lite[a-zA-Z0-9-]*\.vercel\.app$/.test(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow if origin matches explicit whitelist
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
@@ -90,7 +112,7 @@ app.use(
 );
 
 // 4. HTTP Request Logging
-if (process.env.NODE_ENV === 'production') {
+if (NODE_ENV === 'production') {
   app.use(morgan('combined'));
 } else {
   app.use(morgan('dev'));
@@ -114,7 +136,9 @@ app.use('/api/leads', leadRoutes);
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    timestamp: new Date()
+    timestamp: new Date(),
+    environment: NODE_ENV,
+    allowedOrigins
   });
 });
 
@@ -122,6 +146,7 @@ app.get('/api/health', (req, res) => {
 app.use(errorHandler);
 
 // Start Server
+// Railway injects PORT at runtime — do not require it in .env
 const PORT = process.env.PORT || 5000;
 
 let server;
@@ -138,7 +163,7 @@ const startServer = async () => {
 
 startServer();
 
-// 9. Graceful Shutdown
+// Graceful Shutdown
 const gracefulShutdown = async (signal) => {
   console.log(`Received ${signal}. Server shutting down gracefully`);
 

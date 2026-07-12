@@ -11,6 +11,12 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
+            console.error('[Vite Proxy Error] Cannot reach backend on localhost:5000:', err.message);
+          });
+        },
       },
     },
   },
