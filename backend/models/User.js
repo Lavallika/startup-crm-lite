@@ -58,6 +58,52 @@ export const userSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    /**
+     * User notification preferences for alerts and digests.
+     */
+    notificationPreferences: {
+      emailAlerts: {
+        type: Boolean,
+        default: true
+      },
+      weeklyDigest: {
+        type: Boolean,
+        default: true
+      },
+      stageChanges: {
+        type: Boolean,
+        default: true
+      },
+      taskReminders: {
+        type: Boolean,
+        default: true
+      },
+      accountAlerts: {
+        type: Boolean,
+        default: true
+      },
+      marketingUpdates: {
+        type: Boolean,
+        default: false
+      }
+    },
+    /**
+     * User CRM workflow preferences.
+     */
+    crmPreferences: {
+      defaultLeadStatus: {
+        type: String,
+        default: 'New'
+      },
+      dateFormat: {
+        type: String,
+        default: 'MM/DD/YYYY'
+      },
+      timezone: {
+        type: String,
+        default: 'UTC'
+      }
     }
   },
   {

@@ -1,40 +1,34 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import StatusBadge from '../leads/StatusBadge';
 
 /**
- * Recent Leads — responsive table with horizontal scroll on mobile.
- * Mobile: compact rows, fewer columns visible, scrollable.
+ * Recent Leads — responsive table showing the 5 most recently added leads.
+ * Mobile: compact rows, horizontally scrollable.
  */
-const RecentLeads = ({ leads }) => {
-  const recentLeads = [...leads].slice(0, 5);
-
-  const getStatusBadge = (status) => {
-    const styles = {
-      'New':                'bg-blue-100   text-blue-700   dark:bg-blue-900/30   dark:text-blue-300',
-      'Contacted':          'bg-amber-100  text-amber-700  dark:bg-amber-900/30  dark:text-amber-300',
-      'Meeting Scheduled':  'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
-      'Proposal Sent':      'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
-      'Won':                'bg-green-100  text-green-700  dark:bg-green-900/30  dark:text-green-300',
-      'Lost':               'bg-red-100    text-red-700    dark:bg-red-900/30    dark:text-red-300',
-    };
-
-    return (
-      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${styles[status] || 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
-        {status}
-      </span>
-    );
-  };
+const RecentLeads = ({ leads = [] }) => {
+  // Sort by newest first to ensure accurate representation of recent additions
+  const recentLeads = [...leads]
+    .sort((a, b) => new Date(b.createdAt || b.dateAdded || 0) - new Date(a.createdAt || a.dateAdded || 0))
+    .slice(0, 5);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* Card header */}
       <div className="px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-        <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">Recent Leads</h3>
+        <div>
+          <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
+            Recent Leads
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Latest additions to your database
+          </p>
+        </div>
         <NavLink
           to="/leads"
-          className="text-xs md:text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors min-h-[44px] flex items-center px-1"
+          className="text-xs md:text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors min-h-[44px] flex items-center px-1"
         >
-          View All
+          View All ({leads.length})
         </NavLink>
       </div>
 
@@ -52,7 +46,7 @@ const RecentLeads = ({ leads }) => {
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {recentLeads.length > 0 ? (
               recentLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                <tr key={lead.id || lead._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="py-3 px-4 md:px-6">
                     <div className="font-medium text-sm text-gray-900 dark:text-white truncate max-w-[120px] md:max-w-none">
                       {lead.name}
@@ -62,17 +56,17 @@ const RecentLeads = ({ leads }) => {
                     {lead.company}
                   </td>
                   <td className="py-3 px-4 md:px-6">
-                    {getStatusBadge(lead.status)}
+                    <StatusBadge status={lead.status} />
                   </td>
                   <td className="py-3 px-4 md:px-6 text-sm text-gray-500 dark:text-gray-400 hidden md:table-cell whitespace-nowrap">
-                    {lead.dateAdded}
+                    {lead.dateAdded || (lead.createdAt ? lead.createdAt.split('T')[0] : 'Today')}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td colSpan="4" className="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                  No recent leads found.
+                  No leads recorded yet. Click "Add Lead" to get started.
                 </td>
               </tr>
             )}

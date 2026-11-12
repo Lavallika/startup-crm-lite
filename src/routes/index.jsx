@@ -7,7 +7,9 @@ import { useAuth } from '../context/AuthContext';
 // Use React.lazy to dynamically import page components for code splitting
 const Dashboard = React.lazy(() => import('../pages/Dashboard'));
 const Leads = React.lazy(() => import('../pages/Leads'));
+const Pipeline = React.lazy(() => import('../pages/Pipeline'));
 const Analytics = React.lazy(() => import('../pages/Analytics'));
+const Settings = React.lazy(() => import('../pages/Settings'));
 const Login = React.lazy(() => import('../pages/Login'));
 const Register = React.lazy(() => import('../pages/Register'));
 const NotFound = React.lazy(() => import('../pages/NotFound'));
@@ -47,7 +49,10 @@ const AppRoutes = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/leads" element={<Leads />} />
+          <Route path="/pipeline" element={<Pipeline />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Navigate to="/settings" replace />} />
         </Route>
 
         {/* Catch-all route */}

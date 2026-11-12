@@ -4,18 +4,66 @@
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  /* Brand color tokens - Light mode values */
+  --brand-background: #F8FAFC;
+  --brand-surface: #EDF2F7;
+  --brand-primary: #3B5CCC;
+  --brand-secondary: #5E81F4;
+  --brand-accent: #FF8F5A;
+  --brand-text: #1A2330;
+  --brand-text-secondary: #4E5D78;
+  --brand-border: #D9E2EF;
+  
+  --brand-success: #10B981;
+  --brand-success-bg: rgba(16, 185, 129, 0.1);
+  --brand-success-border: rgba(16, 185, 129, 0.2);
+  
+  --brand-warning: #F59E0B;
+  --brand-warning-bg: rgba(245, 158, 11, 0.1);
+  --brand-warning-border: rgba(245, 158, 11, 0.2);
+  
+  --brand-error: #EF4444;
+  --brand-error-bg: rgba(239, 68, 68, 0.1);
+  --brand-error-border: rgba(239, 68, 68, 0.2);
+}
+
+.dark {
+  /* Brand color tokens - Dark mode values */
+  --brand-background: #111827;
+  --brand-surface: #1B2435;
+  --brand-primary: #6C8DFF;
+  --brand-secondary: #9EB4FF;
+  --brand-accent: #FFA26E;
+  --brand-text: #F8FAFC;
+  --brand-text-secondary: #94A3B8;
+  --brand-border: #2E3A52;
+  
+  --brand-success: #34D399;
+  --brand-success-bg: rgba(52, 211, 153, 0.1);
+  --brand-success-border: rgba(52, 211, 153, 0.2);
+  
+  --brand-warning: #FBBF24;
+  --brand-warning-bg: rgba(251, 191, 36, 0.1);
+  --brand-warning-border: rgba(251, 191, 36, 0.2);
+  
+  --brand-error: #F87171;
+  --brand-error-bg: rgba(248, 113, 113, 0.1);
+  --brand-error-border: rgba(248, 113, 113, 0.2);
+}
+
 @theme {
-    --font-roboto: "Roboto", sans-serif;
-    --color-primary: #2563EB;
-    --color-success: #22C55E;
-    --color-warning: #F59E0B;
-    --color-danger: #EF4444;
-
-    --color-background: #F8FAFC;
-    --color-card: #FFFFFF;
-
-    --color-text-dark: #0F172A;
-    --color-text-gray: #64748B;
+  --font-roboto: "Roboto", sans-serif;
+  
+  /* Map custom properties to existing design tokens */
+  --color-primary: var(--brand-primary);
+  --color-success: var(--brand-success);
+  --color-warning: var(--brand-warning);
+  --color-danger: var(--brand-error);
+  --color-background: var(--brand-background);
+  --color-card: var(--brand-surface);
+  --color-text-dark: var(--brand-text);
+  --color-text-gray: var(--brand-text-secondary);
 }
 
 @utility scrollbar-none {
@@ -28,11 +76,249 @@
 
 @layer base {
     body {
-        @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-200 ease-in-out;
+        @apply transition-colors duration-200 ease-in-out;
+        background-color: var(--brand-background) !important;
+        color: var(--brand-text) !important;
     }
     *, ::before, ::after {
         transition-property: color, background-color, border-color;
         transition-duration: 200ms;
         transition-timing-function: ease-in-out;
+        border-color: var(--brand-border);
+    }
+    
+    /* Apply style overrides to hardcoded white/gray/slate classes to map them dynamically to brand design tokens */
+    
+    /* Surface mapping: Replace white background blocks */
+    .bg-white {
+        background-color: var(--brand-surface) !important;
+    }
+    .bg-white\/50 {
+        background-color: color-mix(in srgb, var(--brand-surface) 50%, transparent) !important;
+    }
+    .bg-white\/70 {
+        background-color: color-mix(in srgb, var(--brand-surface) 70%, transparent) !important;
+    }
+    .dark .bg-white\/70 {
+        background-color: color-mix(in srgb, var(--brand-surface) 70%, transparent) !important;
+    }
+    .bg-white\/80 {
+        background-color: color-mix(in srgb, var(--brand-surface) 80%, transparent) !important;
+    }
+    
+    /* Background mapping: Replace gray-50 background blocks */
+    .bg-gray-50 {
+        background-color: var(--brand-background) !important;
+    }
+    .bg-gray-50\/60 {
+        background-color: color-mix(in srgb, var(--brand-background) 60%, transparent) !important;
+    }
+    .dark .bg-gray-900 {
+        background-color: var(--brand-background) !important;
+    }
+    .dark .bg-gray-900\/50 {
+        background-color: color-mix(in srgb, var(--brand-background) 50%, transparent) !important;
+    }
+    
+    /* Card dark mode overrides */
+    .dark .bg-gray-800 {
+        background-color: var(--brand-surface) !important;
+    }
+    .dark .bg-gray-800\/50 {
+        background-color: color-mix(in srgb, var(--brand-surface) 50%, transparent) !important;
+    }
+    
+    /* Outer wrapper outer margins mapping (slate-200/50 and dark:bg-black) */
+    .bg-slate-200\/50 {
+        background-color: color-mix(in srgb, var(--brand-background) 80%, var(--brand-border)) !important;
+    }
+    .dark .bg-black {
+        background-color: color-mix(in srgb, var(--brand-background) 90%, #000000) !important;
+    }
+    
+    /* Input/Border mapping: Replace gray-200/gray-700 borders */
+    .border-gray-200 {
+        border-color: var(--brand-border) !important;
+    }
+    .dark .border-gray-700 {
+        border-color: var(--brand-border) !important;
+    }
+    .border-gray-100 {
+        border-color: color-mix(in srgb, var(--brand-border) 50%, var(--brand-surface)) !important;
+    }
+    .dark .border-gray-800\/50 {
+        border-color: color-mix(in srgb, var(--brand-border) 50%, transparent) !important;
+    }
+    .border-white\/20 {
+        border-color: color-mix(in srgb, var(--brand-border) 20%, transparent) !important;
+    }
+    .border-indigo-100 {
+        border-color: color-mix(in srgb, var(--brand-accent) 20%, var(--brand-surface)) !important;
+    }
+    .dark .border-indigo-900\/40 {
+        border-color: color-mix(in srgb, var(--brand-accent) 30%, transparent) !important;
+    }
+    
+    /* Text mapping: Replace gray-900/white and gray-500/gray-400 */
+    .text-gray-900 {
+        color: var(--brand-text) !important;
+    }
+    .dark .text-white {
+        color: var(--brand-text) !important;
+    }
+    .text-gray-700 {
+        color: var(--brand-text-secondary) !important;
+    }
+    .dark .text-gray-300 {
+        color: var(--brand-secondary) !important;
+    }
+    .text-gray-500 {
+        color: var(--brand-secondary) !important;
+    }
+    .dark .text-gray-400 {
+        color: var(--brand-secondary) !important;
+    }
+    .text-gray-600 {
+        color: var(--brand-secondary) !important;
+    }
+    
+    /* Primary / Accent color mappings (replace indigo-600, blue-600, etc.) */
+    .bg-indigo-600 {
+        background-color: var(--brand-accent) !important;
+    }
+    .hover\:bg-indigo-700:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 85%, #000000) !important;
+    }
+    .dark .hover\:bg-indigo-700:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 85%, #ffffff) !important;
+    }
+    .bg-blue-600 {
+        background-color: var(--brand-accent) !important;
+    }
+    .hover\:bg-blue-700:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 85%, #000000) !important;
+    }
+    .dark .bg-indigo-500 {
+        background-color: var(--brand-accent) !important;
+    }
+    .dark .hover\:bg-indigo-600:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 85%, #000000) !important;
+    }
+    .bg-indigo-50 {
+        background-color: color-mix(in srgb, var(--brand-accent) 8%, var(--brand-surface)) !important;
+    }
+    .dark .bg-gray-700 {
+        background-color: color-mix(in srgb, var(--brand-accent) 15%, var(--brand-surface)) !important;
+    }
+    .bg-indigo-100 {
+        background-color: color-mix(in srgb, var(--brand-accent) 15%, var(--brand-surface)) !important;
+    }
+    .dark .bg-indigo-900\/50 {
+        background-color: color-mix(in srgb, var(--brand-accent) 25%, transparent) !important;
+    }
+    .bg-indigo-50\/60 {
+        background-color: color-mix(in srgb, var(--brand-accent) 6%, var(--brand-surface)) !important;
+    }
+    .dark .bg-indigo-950\/30 {
+        background-color: color-mix(in srgb, var(--brand-accent) 12%, transparent) !important;
+    }
+    .text-indigo-600 {
+        color: var(--brand-accent) !important;
+    }
+    .dark .text-indigo-400 {
+        color: var(--brand-accent) !important;
+    }
+    .text-blue-600 {
+        color: var(--brand-accent) !important;
+    }
+    .dark .text-blue-400 {
+        color: var(--brand-accent) !important;
+    }
+    
+    /* Interactive rings & focus outlines */
+    .focus\:ring-indigo-500:focus {
+        --tw-ring-color: var(--brand-accent) !important;
+    }
+    .focus\:ring-blue-500:focus {
+        --tw-ring-color: var(--brand-accent) !important;
+    }
+    .focus\:ring-gray-200:focus {
+        --tw-ring-color: var(--brand-border) !important;
+    }
+    
+    /* Hover bg classes */
+    .hover\:bg-gray-50:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 4%, var(--brand-surface)) !important;
+    }
+    .dark .hover\:bg-gray-700\/50:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 10%, transparent) !important;
+    }
+    .dark .hover\:bg-gray-700:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 10%, var(--brand-surface)) !important;
+    }
+    .hover\:bg-gray-100:hover {
+        background-color: color-mix(in srgb, var(--brand-accent) 6%, var(--brand-surface)) !important;
+    }
+    .hover\:bg-red-50:hover {
+        background-color: var(--brand-error-bg) !important;
+    }
+    .dark .hover\:bg-red-900\/20:hover {
+        background-color: var(--brand-error-bg) !important;
+    }
+    
+    /* Shadow adjustments */
+    .shadow-indigo-600\/20 {
+        --tw-shadow-color: color-mix(in srgb, var(--brand-accent) 20%, transparent) !important;
+    }
+    .shadow-indigo-600\/30 {
+        --tw-shadow-color: color-mix(in srgb, var(--brand-accent) 30%, transparent) !important;
+    }
+    
+    /* Semantic Colors Overrides */
+    .text-green-500, .text-green-600 {
+        color: var(--brand-success) !important;
+    }
+    .dark .text-green-400 {
+        color: var(--brand-success) !important;
+    }
+    .bg-green-100 {
+        background-color: var(--brand-success-bg) !important;
+    }
+    .dark .bg-green-900\/30 {
+        background-color: var(--brand-success-bg) !important;
+    }
+    
+    .text-amber-500, .text-amber-600 {
+        color: var(--brand-warning) !important;
+    }
+    .dark .text-amber-400 {
+        color: var(--brand-warning) !important;
+    }
+    .bg-amber-100 {
+        background-color: var(--brand-warning-bg) !important;
+    }
+    .dark .bg-amber-900\/30 {
+        background-color: var(--brand-warning-bg) !important;
+    }
+    
+    .text-red-500, .text-red-600 {
+        color: var(--brand-error) !important;
+    }
+    .dark .text-red-400 {
+        color: var(--brand-error) !important;
+    }
+    .bg-red-500\/10, .bg-red-100 {
+        background-color: var(--brand-error-bg) !important;
+    }
+    .dark .bg-red-900\/30 {
+        background-color: var(--brand-error-bg) !important;
+    }
+    .border-red-500\/20 {
+        border-color: var(--brand-error-border) !important;
+    }
+    
+    /* Backdrop blur styling */
+    .bg-slate-900\/50 {
+        background-color: color-mix(in srgb, var(--brand-background) 50%, transparent) !important;
     }
 }

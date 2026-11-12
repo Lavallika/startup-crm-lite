@@ -20,7 +20,7 @@ const Login = () => {
     setError('');
     setLoading(true);
 
-    const result = await login(email, password);
+    const result = await login(email.trim(), password);
     if (result.success) {
       navigate('/');
     } else {

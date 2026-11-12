@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Lead from '../models/Lead.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -129,7 +130,7 @@ export const getProfile = async (req, res, next) => {
  */
 export const updateProfile = async (req, res, next) => {
   try {
-    const { name, oldPassword, newPassword } = req.body;
+    const { name, notificationPreferences, crmPreferences, oldPassword, newPassword } = req.body;
 
     // Fetch the full user document including password for comparison
     const user = await User.findById(req.user._id).select('+password');
@@ -139,19 +140,39 @@ export const updateProfile = async (req, res, next) => {
 
     // Update name if provided
     if (name) {
-      user.name = name;
+      user.name = name.trim();
+    }
+
+    // Update notification preferences if provided
+    if (notificationPreferences && typeof notificationPreferences === 'object') {
+      user.notificationPreferences = {
+        ...(user.notificationPreferences?.toObject ? user.notificationPreferences.toObject() : user.notificationPreferences || {}),
+        ...notificationPreferences
+      };
+    }
+
+    // Update CRM preferences if provided
+    if (crmPreferences && typeof crmPreferences === 'object') {
+      user.crmPreferences = {
+        ...(user.crmPreferences?.toObject ? user.crmPreferences.toObject() : user.crmPreferences || {}),
+        ...crmPreferences
+      };
     }
 
     // Handle password update — requires old password verification first
     if (newPassword) {
       if (!oldPassword) {
-        return errorResponse(res, 'Old password is required to set a new password', 400);
+        return errorResponse(res, 'Current password is required to set a new password', 400);
+      }
+
+      if (newPassword.length < 6) {
+        return errorResponse(res, 'New password must be at least 6 characters long', 400);
       }
 
       // Verify old password is correct before allowing change
       const isOldPasswordValid = await user.comparePassword(oldPassword);
       if (!isOldPasswordValid) {
-        return errorResponse(res, 'Old password is incorrect', 401);
+        return errorResponse(res, 'Current password is incorrect', 401);
       }
 
       // Set new password — the pre-save hook will hash it automatically on save()
@@ -183,6 +204,48 @@ export const updateProfile = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   try {
     return successResponse(res, null, 'Logged out successfully. Please delete your token on the client.', 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * @desc    Permanently delete the authenticated user's account and all their leads
+ * @route   DELETE /api/auth/account
+ * @access  Protected
+ *
+ * Requires password confirmation to prevent accidental deletion.
+ * Cascades: deletes all Lead documents owned by this user.
+ */
+export const deleteAccount = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      return errorResponse(res, 'Password confirmation is required to delete your account', 400);
+    }
+
+    // Fetch user with password for verification
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) {
+      return errorResponse(res, 'User not found', 404);
+    }
+
+    // Verify password before allowing deletion
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return errorResponse(res, 'Incorrect password. Account deletion cancelled.', 401);
+    }
+
+    // Delete all leads owned by this user (cascade)
+    await Lead.deleteMany({ owner: req.user._id });
+
+    // Delete the user account itself
+    await user.deleteOne();
+
+    return successResponse(res, null, 'Account and all associated data deleted permanently.', 200);
   } catch (error) {
     next(error);
   }

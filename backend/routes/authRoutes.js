@@ -1,17 +1,38 @@
 import express from 'express';
 import { body } from 'express-validator';
+import { rateLimit } from 'express-rate-limit';
 
 import {
   register,
   login,
   getProfile,
   updateProfile,
-  logout
+  logout,
+  deleteAccount
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 
 const router = express.Router();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTH RATE LIMITER
+// Stricter limits applied specifically to public authentication attempts
+// (login and registration) to prevent brute-force attacks without blocking
+// authenticated profile or session verification requests.
+// ─────────────────────────────────────────────────────────────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'development' ? 100 : 25, // 25 attempts in prod, 100 in dev
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    return res.status(429).json({
+      success: false,
+      message: 'Too many authentication attempts. Please try again after 15 minutes.'
+    });
+  }
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION RULE SETS
@@ -32,7 +53,7 @@ const registerValidations = [
     .trim()
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Please provide a valid email address')
-    .normalizeEmail(),
+    .toLowerCase(),
 
   body('password')
     .notEmpty().withMessage('Password is required')
@@ -48,7 +69,7 @@ const loginValidations = [
     .trim()
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Please provide a valid email address')
-    .toLowerCase(), // keep consistent casing without altering the address structure
+    .toLowerCase(),
 
   body('password')
     .notEmpty().withMessage('Password is required')
@@ -72,32 +93,29 @@ const updateProfileValidations = [
 
   body('oldPassword')
     .if(body('newPassword').exists())
-    .notEmpty().withMessage('Old password is required when setting a new password')
+    .notEmpty().withMessage('Current password is required when setting a new password')
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ROUTE DEFINITIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
-// NOTE FOR PRODUCTION: Add express-rate-limit middleware before register and login routes
-// to prevent brute-force and credential-stuffing attacks. Example:
-//   import rateLimit from 'express-rate-limit';
-//   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10 });
-//   router.post('/login', authLimiter, validate(loginValidations), login);
+// POST /api/auth/register — Public: Create new user account with rate limiting
+router.post('/register', authLimiter, validate(registerValidations), register);
 
-// POST /api/auth/register — Public: Create new user account
-router.post('/register', validate(registerValidations), register);
-
-// POST /api/auth/login — Public: Authenticate and receive JWT token
-router.post('/login', validate(loginValidations), login);
+// POST /api/auth/login — Public: Authenticate and receive JWT token with rate limiting
+router.post('/login', authLimiter, validate(loginValidations), login);
 
 // GET /api/auth/profile — Protected: Get current logged-in user's profile
 router.get('/profile', protect, getProfile);
 
-// PUT /api/auth/profile — Protected: Update name or password
+// PUT /api/auth/profile — Protected: Update name, notification preferences, or password
 router.put('/profile', protect, validate(updateProfileValidations), updateProfile);
 
 // POST /api/auth/logout — Protected: Logout (client-side token removal)
 router.post('/logout', protect, logout);
+
+// DELETE /api/auth/account — Protected: Permanently delete account + all owned leads
+router.delete('/account', protect, deleteAccount);
 
 export default router;

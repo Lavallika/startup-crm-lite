@@ -49,20 +49,23 @@ const checkRequiredEnvVars = () => {
 app.use(helmet());
 
 // Rate Limiting Config
+// General API limiter applies to all /api/ endpoints to prevent denial-of-service.
+// Auth endpoints (/api/auth/login, /api/auth/register) have dedicated strict rate limiting
+// defined directly in authRoutes.js to avoid throttling legitimate profile verifications.
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests, please try again later.'
-});
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: 'Too many auth attempts.'
+  max: NODE_ENV === 'development' ? 1000 : 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    return res.status(429).json({
+      success: false,
+      message: 'Too many requests from this IP, please try again later.'
+    });
+  }
 });
 
 app.use('/api/', generalLimiter);
-app.use('/api/auth/', authLimiter);
 
 // 3. Configure CORS
 // FRONTEND_URL must be set as an environment variable on Railway to your exact

@@ -41,12 +41,23 @@ const authService = {
   },
 
   /**
-   * Update profile details (name/password)
+   * Update profile details (name / password / notificationPreferences / crmPreferences)
    * @param {Object} data - Update payload
    * @returns {Promise<any>} Response body containing updated user profile
    */
   async updateProfile(data) {
     const response = await api.put('/api/auth/profile', data);
+    return response.data;
+  },
+
+  /**
+   * Permanently delete the authenticated user's account and all their leads.
+   * Requires password confirmation.
+   * @param {string} password - User's current password for verification
+   * @returns {Promise<any>}
+   */
+  async deleteAccount(password) {
+    const response = await api.delete('/api/auth/account', { data: { password } });
     return response.data;
   }
 };

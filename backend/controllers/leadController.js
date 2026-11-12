@@ -2,7 +2,7 @@ import Lead from '../models/Lead.js';
 import { successResponse, errorResponse, paginatedResponse } from '../utils/apiResponse.js';
 
 // Valid lead status and source enums (must match Lead model)
-const VALID_STATUSES = ['New', 'Contacted', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Lost'];
+const VALID_STATUSES = ['New', 'Contacted', 'Qualified', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Converted', 'Lost'];
 const VALID_SOURCES  = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email Campaign', 'Other'];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -94,8 +94,8 @@ export const getLeads = async (req, res, next) => {
     }
 
     const pageNum = Math.max(1, parseInt(page) || 1);
-    const limitNum = Math.max(1, parseInt(limit) || 20);
-    const skip = (pageNum - 1) * limitNum;
+    const limitNum = limit === 'all' ? 1000 : Math.max(1, parseInt(limit) || 20);
+    const skip = limit === 'all' ? 0 : (pageNum - 1) * limitNum;
 
     // Build sort object
     const sortObj = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
@@ -221,6 +221,7 @@ export const updateLead = async (req, res, next) => {
       { _id: req.params.id, owner: req.user._id },
       updateData,
       {
+        returnDocument: 'after',
         new: true,           // Return the updated document
         runValidators: true  // Run schema validators on update
       }
@@ -267,7 +268,7 @@ export const updateLeadStatus = async (req, res, next) => {
     const lead = await Lead.findOneAndUpdate(
       { _id: req.params.id, owner: req.user._id },
       { status },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', new: true, runValidators: true }
     );
 
     if (!lead) {
@@ -403,8 +404,12 @@ export const getLeadStats = async (req, res, next) => {
       });
     }
 
-    const wonLeads = statusBreakdown['Won'] || 0;
+    const wonLeads = (statusBreakdown['Won'] || 0) + (statusBreakdown['Converted'] || 0);
     const lostLeads = statusBreakdown['Lost'] || 0;
+    const newLeads = statusBreakdown['New'] || 0;
+    const contactedLeads = statusBreakdown['Contacted'] || 0;
+    const qualifiedLeads = (statusBreakdown['Qualified'] || 0) + (statusBreakdown['Meeting Scheduled'] || 0);
+    const proposalLeads = statusBreakdown['Proposal Sent'] || 0;
     const activeLeads = totalLeads - wonLeads - lostLeads;
 
     // conversionRate: (won / total) * 100, rounded to 1 decimal
@@ -427,6 +432,11 @@ export const getLeadStats = async (req, res, next) => {
 
     return successResponse(res, {
       totalLeads,
+      newLeads,
+      contactedLeads,
+      qualifiedLeads,
+      proposalLeads,
+      convertedLeads: wonLeads,
       wonLeads,
       lostLeads,
       activeLeads,

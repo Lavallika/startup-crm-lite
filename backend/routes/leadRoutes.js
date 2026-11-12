@@ -27,7 +27,7 @@ router.use(protect);
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Valid enum values must match the Lead model schema exactly
-const VALID_STATUSES = ['New', 'Contacted', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Lost'];
+const VALID_STATUSES = ['New', 'Contacted', 'Qualified', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Converted', 'Lost'];
 const VALID_SOURCES  = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email Campaign', 'Other'];
 
 /**

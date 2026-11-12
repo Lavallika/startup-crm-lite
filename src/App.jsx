@@ -31,7 +31,7 @@ function AppContent() {
   }
 
   return (
-    <div className="flex h-screen w-full max-w-[1440px] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans transform-gpu relative 2xl:shadow-2xl 2xl:ring-1 2xl:ring-gray-200 2xl:dark:ring-gray-800 overflow-hidden">
+    <div className="flex h-screen w-full max-w-[1680px] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans transform-gpu relative 2xl:shadow-2xl 2xl:ring-1 2xl:ring-gray-200 2xl:dark:ring-gray-800 overflow-hidden">
       <Sidebar 
         isMobileMenuOpen={isMobileMenuOpen} 
         setIsMobileMenuOpen={setIsMobileMenuOpen} 

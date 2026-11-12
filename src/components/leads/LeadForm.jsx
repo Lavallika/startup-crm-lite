@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-const STATUS_OPTIONS = ['New', 'Contacted', 'Meeting Scheduled', 'Proposal Sent', 'Won', 'Lost'];
-const SOURCE_OPTIONS = ['Website', 'Referral', 'LinkedIn', 'Cold Call', 'Email Campaign', 'Other'];
+import { STATUS_OPTIONS, SOURCE_OPTIONS } from '../../constants/leadStatuses';
 
 /**
  * A form component to create or edit a lead.

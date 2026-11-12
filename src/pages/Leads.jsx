@@ -1,41 +1,67 @@
-import React, { useState } from 'react';
-import { Plus, LayoutGrid, List as ListIcon, X, Download } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useMemo } from 'react';
+import { Plus, LayoutGrid, List as ListIcon, X, Download, ArrowUpDown } from 'lucide-react';
 import LeadCard from '../components/leads/LeadCard';
 import LeadTable from '../components/leads/LeadTable';
 import LeadForm from '../components/leads/LeadForm';
+import LeadDetailsModal from '../components/leads/LeadDetailsModal';
 import SearchBar from '../components/common/SearchBar';
 import FilterBar from '../components/common/FilterBar';
 import EmptyState from '../components/common/EmptyState';
 import { useLeads } from '../context/LeadContext';
+import { getLeadStage } from '../constants/leadStatuses';
 
 /**
  * Main Leads page component.
+ * Features Search, Status Filters, Sorting, Details View, and responsive Card/Table views.
  * 
- * Responsive behaviour:
- *  - Mobile  (<md): card view only, full-screen modal
- *  - Tablet  (md):  toggle between card & table, centered modal max-w-lg
- *  - Desktop (lg+): table view default, centered modal max-w-lg
- *
  * @returns {JSX.Element}
  */
 const Leads = () => {
-  const { leads, addLead, updateLead, deleteLead } = useLeads();
+  const { leads, addLead, updateLead, updateLeadStatus, deleteLead } = useLeads();
 
-  // On md+ screens, default to table; on smaller screens card is forced anyway
   const [viewMode, setViewMode] = useState('table');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [detailsLead, setDetailsLead] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'oldest' | 'name-asc' | 'name-desc' | 'company' | 'status'
 
-  const filteredLeads = leads
-    .filter(lead => activeFilter === 'All' || lead.status === activeFilter)
-    .filter(lead =>
-      lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lead.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // Filter and sort leads using derived state
+  const filteredLeads = useMemo(() => {
+    return leads
+      .filter((lead) => {
+        if (activeFilter === 'All') return true;
+        return getLeadStage(lead.status) === activeFilter;
+      })
+      .filter((lead) => {
+        const query = searchQuery.toLowerCase().trim();
+        if (!query) return true;
+        return (
+          (lead.name || '').toLowerCase().includes(query) ||
+          (lead.company || '').toLowerCase().includes(query) ||
+          (lead.email || '').toLowerCase().includes(query)
+        );
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return new Date(b.createdAt || b.dateAdded || 0) - new Date(a.createdAt || a.dateAdded || 0);
+          case 'oldest':
+            return new Date(a.createdAt || a.dateAdded || 0) - new Date(b.createdAt || b.dateAdded || 0);
+          case 'name-asc':
+            return (a.name || '').localeCompare(b.name || '');
+          case 'name-desc':
+            return (b.name || '').localeCompare(a.name || '');
+          case 'company':
+            return (a.company || '').localeCompare(b.company || '');
+          case 'status':
+            return (a.status || '').localeCompare(b.status || '');
+          default:
+            return 0;
+        }
+      });
+  }, [leads, activeFilter, searchQuery, sortBy]);
 
   const handleClearFilters = () => {
     setSearchQuery('');
@@ -52,13 +78,13 @@ const Leads = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteLeadClick = (id) => {
-    if (window.confirm('Are you sure you want to delete this lead?')) {
-      deleteLead(id);
-      toast.success('Lead deleted successfully', {
-        iconTheme: { primary: '#EF4444', secondary: '#fff' },
-        style: { border: '1px solid #EF4444', color: '#EF4444' }
-      });
+  const handleViewLeadClick = (lead) => {
+    setDetailsLead(lead);
+  };
+
+  const handleDeleteLeadClick = async (id) => {
+    if (window.confirm('Are you sure you want to delete this lead? This action cannot be undone.')) {
+      await deleteLead(id);
     }
   };
 
@@ -67,24 +93,29 @@ const Leads = () => {
     setSelectedLead(null);
   };
 
-  const handleSubmitForm = (leadData) => {
+  const handleSubmitForm = async (leadData) => {
     if (selectedLead) {
-      updateLead(selectedLead.id, leadData);
-      toast.success('Lead updated successfully', {
-        style: { border: '1px solid #22C55E', color: '#166534' }
-      });
+      const res = await updateLead(selectedLead.id || selectedLead._id, leadData);
+      if (res.success) {
+        handleCloseModal();
+      }
     } else {
-      addLead(leadData);
-      toast.success('Lead added successfully', {
-        style: { border: '1px solid #22C55E', color: '#166534' }
-      });
+      const res = await addLead(leadData);
+      if (res.success) {
+        handleCloseModal();
+      }
     }
-    handleCloseModal();
+  };
+
+  const handleStatusChangeFromDetails = async (id, newStatus) => {
+    const res = await updateLeadStatus(id, newStatus);
+    if (res.success && detailsLead && (detailsLead.id === id || detailsLead._id === id)) {
+      setDetailsLead((prev) => ({ ...prev, status: newStatus }));
+    }
   };
 
   const handleExportCSV = () => {
     if (filteredLeads.length === 0) {
-      toast.error('No leads to export.');
       return;
     }
     
@@ -96,12 +127,12 @@ const Leads = () => {
         const d = new Date(dateStr);
         if (isNaN(d.getTime())) return dateStr;
         return d.toISOString().split('T')[0];
-      } catch (e) {
+      } catch {
         return dateStr;
       }
     };
 
-    const rows = filteredLeads.map(lead => [
+    const rows = filteredLeads.map((lead) => [
       `"${lead.name || ''}"`,
       `"${lead.company || ''}"`,
       `"${lead.email || ''}"`,
@@ -113,7 +144,7 @@ const Leads = () => {
     
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.join(','))
+      ...rows.map((row) => row.join(','))
     ].join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -124,50 +155,49 @@ const Leads = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    toast.success('Leads exported successfully!', {
-      style: { border: '1px solid #22C55E', color: '#166534' }
-    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8 relative">
-
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6 lg:p-8 relative transition-colors">
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
 
-        {/* ── Header ───────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between gap-4">
+        {/* ── Page Header ───────────────────────────────────────────── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-              Leads
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+              Leads Management
             </h1>
-            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">
-              Manage and track your potential customers.
+            <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 mt-1">
+              Manage, search, sort, and track potential customer leads.
             </p>
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-            {/* View Toggle — tablet and above only */}
-            <div className="hidden md:flex bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-1 shadow-sm">
+            {/* View Toggle — md+ screens */}
+            <div className="hidden md:flex bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-1 shadow-sm">
               <button
+                type="button"
                 onClick={() => setViewMode('table')}
-                className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                className={`p-2 rounded-lg transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
                 aria-label="Table view"
+                title="Table view"
               >
                 <ListIcon size={18} />
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode('card')}
-                className={`p-2 rounded-md transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                className={`p-2 rounded-lg transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer ${
                   viewMode === 'card'
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
                 aria-label="Card view"
+                title="Card view"
               >
                 <LayoutGrid size={18} />
               </button>
@@ -175,56 +205,98 @@ const Leads = () => {
 
             {/* Export CSV button */}
             <button
+              type="button"
               onClick={handleExportCSV}
-              className="flex items-center justify-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 shadow-sm min-w-[44px] min-h-[44px]"
+              className="flex items-center justify-center gap-2 px-3.5 py-2.5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 font-medium rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[44px] cursor-pointer"
               aria-label="Export CSV"
+              title="Export filtered leads to CSV"
             >
               <Download size={18} className="flex-shrink-0" />
               <span className="hidden sm:inline">Export</span>
             </button>
 
-            {/* Add Lead button — full label on md+, icon-only on mobile */}
+            {/* Add Lead button */}
             <button
+              type="button"
               onClick={handleAddLeadClick}
-              className="flex items-center justify-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm min-w-[44px] min-h-[44px]"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-sm hover:shadow-indigo-600/20 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[44px] cursor-pointer"
             >
               <Plus size={18} className="flex-shrink-0" />
-              <span className="hidden sm:inline">Add Lead</span>
+              <span>Add Lead</span>
             </button>
           </div>
         </div>
 
-        {/* ── Search and Filters ────────────────────────────────────── */}
-        <div className="flex flex-col gap-3">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          <div className="overflow-x-auto pb-1">
+        {/* ── Search, Sort, and Filter Controls ─────────────────────── */}
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-3">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+            <div className="flex-1">
+              <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <label htmlFor="lead-sort" className="text-xs font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap flex items-center gap-1">
+                <ArrowUpDown size={14} />
+                <span>Sort by:</span>
+              </label>
+              <select
+                id="lead-sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 text-xs md:text-sm bg-gray-50 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer min-h-[40px]"
+              >
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="company">Company (A-Z)</option>
+                <option value="status">Status</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-gray-100 dark:border-gray-700/60 overflow-x-auto">
             <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} leads={leads} />
           </div>
         </div>
 
-        {/* ── Content Area ─────────────────────────────────────────────
-              Mobile (<md):  card view always
-              Tablet (md):   toggle between card and table
-              Desktop (lg+): table default (toggle still available)
-          ─────────────────────────────────────────────────────────── */}
-        <div className="w-full">
+        {/* ── Active leads count indicator ──────────────────────────── */}
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
+          <span>
+            Showing <strong className="text-gray-900 dark:text-white">{filteredLeads.length}</strong> of{' '}
+            <strong className="text-gray-900 dark:text-white">{leads.length}</strong> total leads
+          </span>
+          {activeFilter !== 'All' && (
+            <button
+              onClick={handleClearFilters}
+              className="text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+            >
+              Reset filter
+            </button>
+          )}
+        </div>
 
-          {/* MOBILE: always card view */}
+        {/* ── Content Area ───────────────────────────────────────────── */}
+        <div className="w-full">
+          {/* Mobile View: Cards */}
           <div className="md:hidden space-y-4">
-            {filteredLeads.length > 0
-              ? filteredLeads.map((lead) => (
-                  <LeadCard
-                    key={lead.id}
-                    lead={lead}
-                    onEdit={handleEditLeadClick}
-                    onDelete={handleDeleteLeadClick}
-                  />
-                ))
-              : <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
-            }
+            {filteredLeads.length > 0 ? (
+              filteredLeads.map((lead) => (
+                <LeadCard
+                  key={lead.id || lead._id}
+                  lead={lead}
+                  onEdit={handleEditLeadClick}
+                  onDelete={handleDeleteLeadClick}
+                  onView={handleViewLeadClick}
+                />
+              ))
+            ) : (
+              <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
+            )}
           </div>
 
-          {/* TABLET + DESKTOP: honour viewMode toggle */}
+          {/* Tablet & Desktop View */}
           <div className="hidden md:block">
             {viewMode === 'table' ? (
               filteredLeads.length > 0 ? (
@@ -232,6 +304,7 @@ const Leads = () => {
                   leads={filteredLeads}
                   onEdit={handleEditLeadClick}
                   onDelete={handleDeleteLeadClick}
+                  onView={handleViewLeadClick}
                 />
               ) : (
                 <EmptyState hasLeads={leads.length > 0} onClearFilters={handleClearFilters} />
@@ -240,10 +313,11 @@ const Leads = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredLeads.map((lead) => (
                   <LeadCard
-                    key={lead.id}
+                    key={lead.id || lead._id}
                     lead={lead}
                     onEdit={handleEditLeadClick}
                     onDelete={handleDeleteLeadClick}
+                    onView={handleViewLeadClick}
                   />
                 ))}
                 {filteredLeads.length === 0 && (
@@ -255,53 +329,39 @@ const Leads = () => {
             )}
           </div>
         </div>
+
       </div>
 
-      {/* ── Modal ─────────────────────────────────────────────────────
-            Mobile:  full screen (no rounded corners, fills viewport)
-            Tablet+: centered with max-w-lg and rounded corners
-        ─────────────────────────────────────────────────────────── */}
+      {/* ── Create / Edit Lead Modal ───────────────────────────────── */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4">
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
             onClick={handleCloseModal}
           />
-
-          {/* Modal panel */}
           <div
-            className="
-              relative w-full h-full md:h-auto
-              md:max-w-lg
-              bg-white dark:bg-gray-800
-              rounded-none md:rounded-xl
-              shadow-xl overflow-hidden
-              flex flex-col
-            "
+            className="relative w-full h-full md:h-auto md:max-w-lg bg-white dark:bg-gray-800 rounded-none md:rounded-2xl shadow-2xl overflow-hidden flex flex-col z-10 border border-gray-200 dark:border-gray-700"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="modal-title"
+            aria-labelledby="modal-lead-form-title"
           >
-            {/* Header */}
-            <div className="flex justify-between items-center px-4 md:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h2
-                id="modal-title"
-                className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white"
+                id="modal-lead-form-title"
+                className="text-lg font-bold text-gray-900 dark:text-white"
               >
                 {selectedLead ? 'Edit Lead' : 'Add New Lead'}
               </h2>
               <button
+                type="button"
                 onClick={handleCloseModal}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2 rounded-lg"
                 aria-label="Close modal"
               >
                 <X size={20} />
               </button>
             </div>
-
-            {/* Body — scrollable on mobile full-screen */}
-            <div className="p-4 md:p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1">
               <LeadForm
                 initialData={selectedLead}
                 onSubmit={handleSubmitForm}
@@ -311,6 +371,19 @@ const Leads = () => {
           </div>
         </div>
       )}
+
+      {/* ── Lead Details Modal ─────────────────────────────────────── */}
+      <LeadDetailsModal
+        lead={detailsLead}
+        isOpen={Boolean(detailsLead)}
+        onClose={() => setDetailsLead(null)}
+        onEdit={(lead) => {
+          setSelectedLead(lead);
+          setIsModalOpen(true);
+        }}
+        onDelete={handleDeleteLeadClick}
+        onStatusChange={handleStatusChangeFromDetails}
+      />
     </div>
   );
 };

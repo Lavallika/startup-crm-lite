@@ -1,17 +1,22 @@
+/**
+ * Design token palette for analytics visualizers.
+ * Configured to dynamically resolve to light and dark theme brand colors using CSS custom properties.
+ */
+
 export const STATUS_COLORS = {
-  New: "#94A3B8",
-  Contacted: "#2563EB",
-  Meeting: "#F59E0B",
-  Proposal: "#7C3AED",
-  Won: "#22C55E",
-  Lost: "#EF4444",
+  New: "var(--brand-secondary)",
+  Contacted: "var(--brand-primary)",
+  Meeting: "var(--brand-accent)",
+  Proposal: "var(--brand-accent)",
+  Won: "var(--brand-success)",
+  Lost: "var(--brand-error)",
 };
 
 export const CHART_COLORS = {
-  primary: "#2563EB", // Primary Blue
-  success: "#22C55E", // Success Green
-  warning: "#F59E0B",
-  danger: "#EF4444",
-  purple: "#7C3AED",
-  muted: "#94A3B8"
+  primary: "var(--brand-accent)",
+  success: "var(--brand-success)",
+  warning: "var(--brand-warning)",
+  danger: "var(--brand-error)",
+  purple: "var(--brand-primary)",
+  muted: "var(--brand-secondary)"
 };

@@ -100,6 +100,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Update profile details (name, notification preferences, password)
+   * @param {Object} data 
+   * @returns {Promise<{success: boolean, user?: Object, error?: string}>}
+   */
+  const updateUserProfile = async (data) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.updateProfile(data);
+      if (result.success && result.data?.user) {
+        setUser(result.data.user);
+        toast.success(result.message || 'Profile updated successfully!');
+        return { success: true, user: result.data.user };
+      }
+      throw new Error(result.message || 'Failed to update profile');
+    } catch (error) {
+      const errMsg = error.response?.data?.message || error.message || 'Failed to update profile';
+      toast.error(errMsg);
+      return { success: false, error: errMsg };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
    * Log out current user
    */
   const logout = () => {
@@ -111,8 +135,33 @@ export const AuthProvider = ({ children }) => {
     window.location.href = '/login';
   };
 
+  /**
+   * Permanently delete the authenticated user's account.
+   * @param {string} password - Confirmation password
+   * @returns {Promise<{success: boolean, error?: string}>}
+   */
+  const deleteAccount = async (password) => {
+    try {
+      const result = await authService.deleteAccount(password);
+      if (result.success) {
+        // Clear local state before redirect
+        authService.logout();
+        setToken(null);
+        setUser(null);
+        toast.success('Account deleted. We\'re sorry to see you go.');
+        window.location.href = '/login';
+        return { success: true };
+      }
+      throw new Error(result.message || 'Account deletion failed');
+    } catch (error) {
+      const errMsg = error.response?.data?.message || error.message || 'Account deletion failed';
+      toast.error(errMsg);
+      return { success: false, error: errMsg };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, setUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, setUser, updateUserProfile, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );
